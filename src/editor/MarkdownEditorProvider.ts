@@ -2,11 +2,15 @@ import { randomBytes } from 'crypto';
 import * as vscode from 'vscode';
 import { EXTENSION_ID } from '../shared/meta';
 import type { HostMessage, Settings, WebviewMessage } from '../shared/protocol';
+import type { ThemeService } from '../theme/ThemeService';
 import { openLink } from './links';
 import { DocumentSync } from './sync';
 
 export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
-  constructor(private readonly extensionUri: vscode.Uri) {}
+  constructor(
+    private readonly extensionUri: vscode.Uri,
+    private readonly theme: ThemeService,
+  ) {}
 
   resolveCustomTextEditor(document: vscode.TextDocument, panel: vscode.WebviewPanel): void {
     const webview = panel.webview;
@@ -22,20 +26,24 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
     const sync = new DocumentSync(document, post);
 
     const subscriptions = [
+      this.theme.onDidChange((tokens) => post({ type: 'tokenTheme', tokens })),
       vscode.workspace.onDidChangeTextDocument((e) => {
         if (e.document === document && e.contentChanges.length > 0) sync.documentChanged();
       }),
-      webview.onDidReceiveMessage((message: WebviewMessage) => {
+      webview.onDidReceiveMessage(async (message: WebviewMessage) => {
         switch (message.type) {
-          case 'ready':
+          case 'ready': {
+            const tokens = await this.theme.tokens;
             post({
               type: 'init',
               ...sync.snapshot(),
+              tokens,
               eol: document.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n',
               baseUri: `${webview.asWebviewUri(docDir).toString()}/`,
               settings: readSettings(),
             });
             break;
+          }
           case 'edit':
             sync.receiveEdit(message);
             break;

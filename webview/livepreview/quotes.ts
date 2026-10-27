@@ -18,6 +18,7 @@ export const quoteTheme = EditorView.baseTheme({
   '.cm-line.cm-ob-quote': {
     borderLeft: '3px solid var(--vscode-textBlockQuote-border, var(--vscode-textLink-foreground))',
     paddingLeft: '1em',
+    backgroundColor: 'var(--vscode-textBlockQuote-background)',
     color: 'var(--vscode-descriptionForeground)',
   },
 });

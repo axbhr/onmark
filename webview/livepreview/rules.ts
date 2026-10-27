@@ -16,6 +16,6 @@ export const ruleTheme = EditorView.baseTheme({
     display: 'inline-block',
     width: '100%',
     verticalAlign: 'middle',
-    borderTop: '1px solid var(--vscode-editorWidget-border, var(--vscode-descriptionForeground))',
+    borderTop: '1px solid var(--vscode-textSeparator-foreground, var(--vscode-descriptionForeground))',
   },
 });

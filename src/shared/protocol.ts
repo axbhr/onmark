@@ -1,4 +1,5 @@
 import type { Change } from './text';
+import type { TokenTheme } from './tokens';
 
 export interface Settings {
   fontFamily: string;
@@ -23,5 +24,8 @@ export type HostMessage =
       eol: '\n' | '\r\n';
       baseUri: string;
       settings: Settings;
+      tokens: TokenTheme;
     }
-  | { type: 'externalUpdate'; text: string; version: number };
+  | { type: 'externalUpdate'; text: string; version: number }
+  /** Code token colors of the active color theme; sent on every theme change. */
+  | { type: 'tokenTheme'; tokens: TokenTheme };
