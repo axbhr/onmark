@@ -1,1 +1,6 @@
+* text=auto eol=lf
+*.png binary
+*.gif binary
+*.ico binary
+*.ttf binary
 samples/crlf.md -text

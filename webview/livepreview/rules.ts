@@ -12,7 +12,7 @@ export const ruleHandlers: NodeHandlers = {
 };
 
 export const ruleTheme = EditorView.baseTheme({
-  '.cm-ob-hr': {
+  '.cm-om-hr': {
     display: 'inline-block',
     width: '100%',
     verticalAlign: 'middle',

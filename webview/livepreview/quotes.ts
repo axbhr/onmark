@@ -7,7 +7,7 @@ export const quoteHandlers: NodeHandlers = {
     if (calloutInfo(ctx.state, node)) return;
     const { doc } = ctx.state;
     const last = doc.lineAt(node.to).number;
-    for (let n = doc.lineAt(node.from).number; n <= last; n++) ctx.line(doc.line(n).from, 'cm-ob-quote');
+    for (let n = doc.lineAt(node.from).number; n <= last; n++) ctx.line(doc.line(n).from, 'cm-om-quote');
   },
   QuoteMark(node, ctx) {
     if (ctx.lineActive(node.from)) return;
@@ -17,7 +17,7 @@ export const quoteHandlers: NodeHandlers = {
 };
 
 export const quoteTheme = EditorView.baseTheme({
-  '.cm-line.cm-ob-quote': {
+  '.cm-line.cm-om-quote': {
     borderLeft: '3px solid var(--vscode-textBlockQuote-border, var(--vscode-textLink-foreground))',
     paddingLeft: '1em',
     backgroundColor: 'var(--vscode-textBlockQuote-background)',

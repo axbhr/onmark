@@ -7,7 +7,7 @@ export class BulletWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const span = document.createElement('span');
-    span.className = 'cm-ob-bullet';
+    span.className = 'cm-om-bullet';
     span.textContent = '•';
     return span;
   }

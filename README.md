@@ -1,197 +1,175 @@
-# Obsidianate
+<div align="center">
 
-Obsidian-artige Live Preview für Markdown in VS Code. `.md`-Dateien öffnen sich in einem Editor, in dem Schreiben und Rendern auf derselben Fläche passieren. Die Datei auf der Platte bleibt reines Markdown.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/axbhr/onmark/main/.github/assets/onmark-lockup-dark.png">
+  <img alt="Onmark" src="https://raw.githubusercontent.com/axbhr/onmark/main/.github/assets/onmark-lockup-light.png" width="360">
+</picture>
 
-> **Stand: Phase 3.** Inline-Elemente und Blöcke werden direkt im Editor gerendert:
-> - Inline: Überschriften, Formatierung, Links, Zitate, Listen, Aufgaben, Linien
-> - Blöcke: Codeblöcke, Bilder, Tabellen, Callouts, Frontmatter
->
-> Die Vault-Funktionen (Wikilinks, Backlinks, Graph) folgen in Phase 4.
+### Markdown that renders as you write.
 
-## Entwicklung
+Live preview editing for Markdown in VS Code and VSCodium.<br>
+No split view, no toggling. Syntax only appears where your cursor is.
+
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/axbhr.onmark?label=VS%20Code%20Marketplace&logo=visualstudiocode&color=E2572B)](https://marketplace.visualstudio.com/items?itemName=axbhr.onmark)
+[![Open VSX](https://img.shields.io/open-vsx/v/axbhr/onmark?label=Open%20VSX&logo=vscodium&color=1C1B19)](https://open-vsx.org/extension/axbhr/onmark)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/axbhr.onmark?color=E2572B)](https://marketplace.visualstudio.com/items?itemName=axbhr.onmark)
+[![Release](https://img.shields.io/github/actions/workflow/status/axbhr/onmark/release.yml?branch=main&label=release)](https://github.com/axbhr/onmark/actions/workflows/release.yml)
+[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-1C1B19)](LICENSE)
+
+[**Install**](#-install) · [**Features**](#-features) · [**Settings**](#-settings) · [**FAQ**](#-faq) · [**Contributing**](CONTRIBUTING.md)
+
+<br>
+
+<img alt="Typing in Onmark: Markdown renders while you write" src="https://raw.githubusercontent.com/axbhr/onmark/main/.github/assets/demo.gif" width="760">
+
+</div>
+
+<br>
+
+## ✨ Why Onmark
+
+Markdown is great to write and tiring to read while you write it. The usual answer is a preview pane next to your editor, which halves your screen and makes your eyes jump back and forth.
+
+Onmark renders the Markdown **in the editor itself**. Headings are big, bold text is bold, tables are tables. Move the cursor into an element and its raw syntax appears so you can edit it; move away and it renders again.
+
+- 🪶 **Plain Markdown on disk.** Onmark never rewrites or reformats anything you did not change. Your files stay portable and diff cleanly in Git.
+- 🎨 **Looks like your VS Code.** Colors, fonts and code highlighting come from your active theme, including dark, light and high contrast, and follow theme switches instantly.
+- ⚡ **Fast on big files.** Built on [CodeMirror 6](https://codemirror.net) with a real Markdown parser. Documents with thousands of lines stay smooth while typing and scrolling.
+- 🔒 **Local and private.** No telemetry, no accounts, no network access except images your notes link to.
+
+## 🧩 Features
+
+| | |
+| --- | --- |
+| **Text** | Headings, **bold**, *italic*, ~~strikethrough~~, ==highlight==, `inline code`, links and autolinks |
+| **Lists** | Bullets, numbered lists and clickable task checkboxes that edit the source |
+| **Code blocks** | Syntax highlighting for 100+ languages in your theme's colors, language label, copy button |
+| **Tables** | GitHub tables with alignment and inline formatting, rendered in place without layout jumps |
+| **Callouts** | `> [!note]`, `[!tip]`, `[!warning]` and 10 more types with icons and colors; foldable with `+`/`-` |
+| **Images** | Local images (relative to the note or the workspace) and `https` images, with optional width `![alt\|300](…)` |
+| **Frontmatter** | YAML frontmatter as a compact, foldable **Properties** block |
+| **Quotes & rules** | Block quotes with a side bar, horizontal rules |
+| **Editing** | Search and replace (`Ctrl+F`), multiple cursors, undo that stays in sync with the text editor |
+
+<details>
+<summary><b>Screenshots in a light and a dark theme</b></summary>
+<br>
+
+| Dark Modern | Light Modern |
+| --- | --- |
+| <img alt="Onmark in the Dark Modern theme" src="https://raw.githubusercontent.com/axbhr/onmark/main/.github/assets/screenshot-dark.png"> | <img alt="Onmark in the Light Modern theme" src="https://raw.githubusercontent.com/axbhr/onmark/main/.github/assets/screenshot-light.png"> |
+
+</details>
+
+## 📦 Install
+
+**VS Code:** search for **Onmark** in the Extensions view, or install it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=axbhr.onmark).
 
 ```bash
-npm install
-npm run build      # dist/extension.js, dist/webview.js, dist/webview.css
-npm run watch      # Rebuild bei Änderungen
-npm run typecheck
-npm test
-npm run sample:large   # erzeugt samples/large.md (5.000+ Zeilen) für Performance-Tests
+code --install-extension axbhr.onmark
 ```
 
-**Debuggen:** `F5` („Run Extension“) baut und startet einen Extension Development Host mit dem Ordner `samples/`.
+**VSCodium and other Open VSX editors:** install it from [Open VSX](https://open-vsx.org/extension/axbhr/onmark).
 
-## Bedienung
+```bash
+codium --install-extension axbhr.onmark
+```
 
-- `.md`-Dateien öffnen sich standardmäßig in Obsidianate.
-- Zum Rohtext wechseln: Button in der Titelleiste, Command **„Obsidianate: Als Quelltext öffnen“** oder „Reopen With… → Text Editor“.
-- Zurück: Button in der Titelleiste des Text-Editors oder **„Obsidianate: In Live Preview öffnen“**.
+**Offline:** download the `.vsix` from the [latest release](https://github.com/axbhr/onmark/releases/latest) and run **Extensions: Install from VSIX…**.
 
-### Live Preview
+Onmark requires VS Code 1.90 or newer (or a VSCodium release based on it).
 
-| Element | Darstellung | Syntax sichtbar, wenn … |
+## 🚀 Usage
+
+Open any `.md` file. It opens in Onmark automatically.
+
+- **See the raw text:** click **Open as Source Text** in the editor title bar or run **Onmark: Open as Source Text** from the Command Palette.
+- **Back to the live preview:** click the Onmark button in the title bar of the text editor or run **Onmark: Open in Live Preview**.
+- **Open links:** `Ctrl+Click` (`Cmd+Click` on macOS). Add `Alt` to open them to the side. Relative `.md` links open in Onmark, other files in their default editor.
+
+Both editors can be open side by side on the same file; changes appear in both instantly.
+
+### Keyboard shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl+B` / `Cmd+B` | Toggle **bold** |
+| `Ctrl+I` / `Cmd+I` | Toggle *italic* |
+| `Ctrl+F` / `Cmd+F` | Find and replace inside the note |
+| `Ctrl+Click` / `Cmd+Click` | Open link (`+Alt`: to the side) |
+
+While Onmark has focus, `Ctrl+B` and `Ctrl+I` format text instead of toggling the sidebar or opening inline chat.
+
+## 🔧 Settings
+
+| Setting | Default | Description |
 | --- | --- | --- |
-| Überschriften `#`–`######` | Schriftgröße je Ebene | Cursor auf der Zeile |
-| `**fett**`, `*kursiv*`, `~~durch~~`, `==markiert==`, `` `Code` `` | formatiert | Cursor/Selektion berührt das Element |
-| `[Text](ziel)`, `<https://…>`, nackte URLs | Link | Cursor/Selektion berührt den Link |
-| `>` Zitat | linker Balken | Cursor auf der Zeile |
-| `-` / `*` / `+` Liste | „•“, hängende Einrückung | Cursor auf der Zeile |
-| `- [ ]` / `- [x]` Aufgabe | klickbare Checkbox (ändert den Quelltext) | Cursor auf der Zeile |
-| `---` Linie | Trennlinie | Cursor auf der Zeile |
-| `![alt\|300](pfad)` Bild | Bild, max. Textbreite, optional mit Breite (`\|300` oder `\|300x200`) | Cursor/Selektion berührt das Bild; das Bild bleibt dann unter dem Rohtext sichtbar |
-| ```` ```lang ```` Codeblock | Hintergrund, Syntax-Highlighting in Theme-Farben, Sprachlabel, Kopier-Button | Cursor im Block (Fences erscheinen, sonst ändert sich nichts) |
-| GFM-Tabelle | gerenderte Tabelle mit Ausrichtung und Inline-Formatierung | Cursor in der Tabelle |
-| `> [!typ]` Callout | farbige Box mit Icon; `+`/`-` macht sie einklappbar (offen/zu) | Titel: Cursor auf der Titelzeile |
-| YAML-Frontmatter | kompakter, einklappbarer Block „Eigenschaften“ | Cursor in der Frontmatter (Klick auf eine Zeile springt dorthin) |
+| `onmark.fontFamily` | `""` | Font for body text. Empty uses the VS Code UI font. Code always uses your editor font. |
+| `onmark.fontSize` | `16` | Font size of body text in pixels. |
+| `onmark.readableLineLength` | `true` | Center the text and limit its width, like a document. |
+| `onmark.maxWidth` | `750` | Maximum text width in pixels when `readableLineLength` is on. |
 
-Ausgeblendete Syntax ist atomar: Der Cursor landet nie in unsichtbaren Zeichen.
+## ❓ FAQ
 
-**Bilder:**
-- Relative Pfade gelten ab dem Ordner der Notiz, Pfade mit `/` am Anfang ab dem Workspace-Ordner.
-- Von außen werden nur `https:` und `data:` geladen.
-- Fehlt ein Bild, erscheint ein Platzhalter mit Alt-Text.
+<details>
+<summary><b>How do I make the normal text editor the default again?</b></summary>
+<br>
 
-**Callout-Typen:** Jede Gruppe hat eine eigene Theme-Farbe und ein eigenes Codicon.
-- `note`
-- `abstract`/`summary`/`tldr`
-- `info`
-- `todo`
-- `tip`/`hint`/`important`
-- `success`/`check`/`done`
-- `question`/`help`/`faq`
-- `warning`/`caution`/`attention`
-- `failure`/`fail`/`missing`
-- `danger`/`error`
-- `bug`
-- `example`
-- `quote`/`cite`
+Add this to your `settings.json`. Onmark stays available via **Reopen Editor With…** and the title bar button.
 
-Unbekannte Typen sehen aus wie `note`. Das Einklappen ändert nur die Ansicht, nie die Datei.
+```json
+"workbench.editorAssociations": {
+  "*.md": "default"
+}
+```
 
-**Links öffnen:** `Strg+Klick` (macOS `Cmd+Klick`) öffnet einen Link, mit zusätzlich `Alt` öffnet er sich daneben.
-- `http`, `https` und `mailto` öffnen sich extern. Andere Schemes wie `command:` werden aus Sicherheitsgründen ignoriert.
-- Relative `.md`-Dateien öffnen sich in Obsidianate, andere Dateien im Standard-Editor.
-- Pfade mit `/` am Anfang gelten relativ zum Workspace-Ordner.
+</details>
 
-### Einstellungen
+<details>
+<summary><b>Does Onmark change my files?</b></summary>
+<br>
 
-| Setting | Default | Bedeutung |
+Only where you type. Onmark edits the same document as the built-in text editor, keeps your line endings (LF or CRLF), never reformats and never adds metadata. Saving, undo, Git and hot exit work as usual.
+
+</details>
+
+<details>
+<summary><b>Code blocks use slightly different colors than my theme in WSL, SSH or containers</b></summary>
+<br>
+
+VS Code does not give webviews access to syntax colors, so Onmark reads them from the theme's extension. Onmark prefers to run on your local machine (where your themes live). If it runs remotely and cannot reach the theme, it falls back to similar colors derived from your theme.
+
+</details>
+
+<details>
+<summary><b>Is Onmark related to Obsidian?</b></summary>
+<br>
+
+No. Onmark is an independent project inspired by the live preview idea popularized by Obsidian and supports its callout and highlight syntax, but it is not affiliated with or endorsed by Obsidian.
+
+</details>
+
+## 🔀 Release channels
+
+| Channel | Versions | How to get it |
 | --- | --- | --- |
-| `obsidianate.fontFamily` | `""` | Schrift für Fließtext; leer = VS-Code-Oberflächenschrift |
-| `obsidianate.fontSize` | `16` | Schriftgröße in px |
-| `obsidianate.readableLineLength` | `true` | Inhalt zentrieren und begrenzen |
-| `obsidianate.maxWidth` | `750` | Maximale Breite in px |
+| **Stable** | `0.2.x`, `0.4.x`, … (even minor) | Default |
+| **Pre-release** | `0.3.x`, `0.5.x`, … (odd minor) | Extensions view → Onmark → **Switch to Pre-Release Version** |
 
-Änderungen an den Einstellungen wirken beim nächsten Öffnen des Editors (Live-Aktualisierung kommt mit `settingsChanged` in Phase 4).
+Every change on `develop` ships as a pre-release first. See the [releases](https://github.com/axbhr/onmark/releases) for the changelog.
 
-## Architektur
+## 🤝 Contributing
 
-- **Custom Text Editor** (`obsidianate.editor`): `vscode.TextDocument` ist die einzige Quelle der Wahrheit. Speichern, Dirty-State, Git-Diff und Hot Exit übernimmt VS Code.
-- **Webview mit CodeMirror 6.** Strikte CSP mit Nonce, `retainContextWhenHidden: false`. Cursor und Scrollposition werden per `setState` gesichert.
-- **Protokoll** (`src/shared/protocol.ts`): Positionen werden als Zeile/Spalte übertragen, nie als Offsets (CRLF ≠ LF). Texte an das Webview sind immer LF-normalisiert, der Host schreibt mit dem EOL der Datei.
-- **Echo-Schutz:** Im Webview tragen Host-Änderungen die Annotation `remoteUpdate` und werden nicht zurückgesendet. Im Host (`src/editor/sync.ts`) spiegelt ein Schatten-Text den Stand des Webviews. Dokumentänderungen, die diesem Stand entsprechen, lösen kein `externalUpdate` aus.
-- **Veraltete Edits:** Jeder `edit` trägt die Version des letzten `init`/`externalUpdate`. Hat der Host seitdem ein neueres Update gesendet, verwirft er den Edit. Das Update überschreibt das Webview ohnehin, damit laufen beide Seiten wieder zusammen.
-- **`externalUpdate`** wird im Webview als minimaler Diff (gemeinsames Präfix/Suffix) und ohne History-Eintrag angewendet. Cursor und Scrollposition bleiben erhalten.
-- **Weitere Nachrichten:**
-  - `openLink` (Webview → Host)
-  - `copy` (Webview → Host, schreibt über `vscode.env.clipboard`)
-  - `tokenTheme` (Host → Webview)
-  - `init` enthält zusätzlich `rootUri` (Workspace-Ordner, für Bildpfade mit `/` am Anfang) und `tokens`.
+Bug reports, ideas and pull requests are welcome! Read the [contributing guide](CONTRIBUTING.md) to get started and the [architecture notes](docs/architecture.md) for how Onmark works inside. Please report security issues privately as described in [SECURITY.md](SECURITY.md).
 
-### Theme
+## 📄 License
 
-Obsidianate folgt immer dem aktiven VS-Code-Theme, auch beim Wechsel im laufenden Betrieb:
+Onmark is free software, licensed under the [GNU General Public License v3.0 or later](LICENSE). You may use, study, share and improve it; distributed modifications must stay open source under the same license.
 
-- **Oberfläche und gerendertes Markdown** nutzen nur Workbench-Farbvariablen (`--vscode-*`): Hintergrund, Text, Links, Auswahl, Cursor, Suche, Zitate, Trennlinien, Inline-Code und High-Contrast-Rahmen. Das gerenderte Markdown sieht damit aus wie die eingebaute Markdown-Vorschau.
-- **Syntax-Farben in Code** (Token-Farben) bekommt ein Webview von VS Code nicht. Der Host (`src/theme/`) liest deshalb die Theme-Datei der Extension, die das aktive Theme liefert. Er folgt dabei `include`, wendet `editor.tokenColorCustomizations` an und schickt die aufgelösten Farben als `tokenTheme` ans Webview. Die Nachricht kommt bei jedem Theme-Wechsel, bei Änderungen an `editor.tokenColorCustomizations` und wenn Extensions installiert oder entfernt werden.
-- **Remote (WSL, SSH, Container):** Theme-Extensions laufen auf der UI-Seite und sind für einen Remote-Extension-Host unsichtbar. Deshalb steht in `package.json` `extensionKind: ["ui", "workspace"]`: Die installierte Extension läuft lokal und sieht alle Themes, Workspace-Dateien erreicht sie über die VS-Code-API. Ist die Theme-Datei trotzdem nicht lesbar, greift ein Fallback auf Theme-Variablen (`symbolIcon-*`, `debugTokenExpression-*`).
-- **F5 aus einem WSL-Fenster:** Die Entwicklungs-Extension läuft im Remote-Host und nutzt daher den Fallback. Die exakten Token-Farben siehst du beim Debuggen aus einem lokalen Fenster oder mit der installierten `.vsix`.
+Third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-### Tastenkürzel im Webview
+## 💛 Acknowledgements
 
-VS Code leitet jeden Tastendruck, der im Webview bis zum `window` durchkommt, an seine eigenen Keybindings weiter. Damit nichts doppelt ausgelöst wird, gilt:
-
-- Tasten, die CodeMirror selbst verarbeitet, werden nicht an VS Code weitergereicht. Daraus ergeben sich diese bewussten Abweichungen von den VS-Code-Keybindings, solange der Live-Preview-Editor den Fokus hat:
-
-| Taste | In Obsidianate | In VS Code sonst |
-| --- | --- | --- |
-| `Strg+B` | fett ein/aus | Seitenleiste ein-/ausblenden |
-| `Strg+I` | kursiv ein/aus | Inline Chat / Vorschläge auslösen |
-| `Strg+F` | Suche von CodeMirror | Suchen-Widget |
-| `Strg+D` | nächstes Vorkommen auswählen | gleich |
-| `Strg+Shift+K` | Zeile löschen | gleich |
-| `Alt+↑/↓` | Zeile verschieben | gleich |
-
-- `Strg+Z` / `Strg+Y` / `Strg+Shift+Z` gehen immer nur an die Undo-History von CodeMirror. Undo in einem parallel geöffneten Text-Editor arbeitet auf dem Dokument und kommt per `externalUpdate` an.
-- Alles andere (`Strg+S`, `Strg+P`, `Strg+Shift+P`, …) behandelt VS Code wie gewohnt.
-
-### Umbenennen
-
-Display-Name, Extension-ID und alle Command-, View- und Setting-IDs stehen ausschließlich in `package.json`. Der Code liest die ID daraus (`src/shared/meta.ts`).
-
-### Abhängigkeiten
-
-Zusätzlich zu den vorgegebenen CodeMirror-Paketen kommen zwei transitive Abhängigkeiten von `@codemirror/language` dazu. Sie werden direkt importiert und stehen deshalb explizit in `package.json`:
-- `@lezer/highlight` liefert die `tags` für Highlight-Styles und die `==Highlight==`-Extension.
-- `@lezer/common` liefert den Typ `SyntaxNode` für die Decoration-Handler.
-
-Neu im Host:
-- `jsonc-parser` (Microsoft) liest Theme-Dateien. Die sind JSONC, also mit Kommentaren und Trailing Commas, und `JSON.parse` scheitert daran.
-
-Neu im Webview:
-- `@vscode/codicons` liefert die Icons für Callouts, Kopier-Button und Einklappen, im Stil von VS Code. Die Schrift wird nach `dist/` gebündelt und unter der CSP über `font-src` geladen.
-
-Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
-
-**Bundle-Größe:** `@codemirror/language-data` lädt Sprachen sonst per dynamischem `import()`. Im vorgegebenen IIFE-Format bündelt esbuild alle Sprachen mit. Das Produktions-Bundle wächst dadurch auf etwa 1,6 MB (gzip etwa 0,5 MB). Die Module werden aber erst ausgeführt, wenn ein Codeblock die Sprache braucht.
-
-### Code-Struktur der Live Preview
-
-- **`context.ts`:** Der gemeinsame Sammler läuft über den Lezer-Baum und ruft pro Knotentyp einen Handler auf. Handler blenden aus, setzen Marks, Zeilenklassen oder Widgets.
-- **`inline.ts`:** Das ViewPlugin für Inline-Decorations, nur für die sichtbaren Bereiche.
-- **`blocks.ts`:** Das StateField für Block-Decorations, Pflicht für Block-Widgets und Ersetzungen über Zeilenumbrüche hinweg. Es deckt das ganze Dokument ab und cached pro Top-Level-Block. Neu gebaut wird ein Block nur, wenn sich sein Text, seine Position, seine Überschneidung mit der Selektion oder sein Klapp-Zustand ändert. Alles andere wird nur gemappt. So bleibt auch eine Datei mit 5.000+ Zeilen flüssig. Ein Test (`test/blocks.test.ts`) vergleicht nach zufälligen Änderungen das inkrementelle Ergebnis mit einem Neuaufbau.
-- **Eine Datei pro Decoration-Gruppe:**
-  - Inline: `headings.ts`, `formatting.ts`, `links.ts`, `images.ts`, `quotes.ts`, `lists.ts`, `rules.ts`
-  - Block: `codeblocks.ts`, `tables.ts`, `callouts.ts`, `frontmatter.ts`
-- **`widgets/`:** ein Widget pro Datei.
-- **`extensions/`:** die Lezer-Extensions für `==…==` und die YAML-Frontmatter.
-- **`render.ts`:** rendert Inline-Markdown für nicht editierbare Widgets, etwa Tabellenzellen.
-- **`folds.ts`:** hält den Klapp-Zustand als reine Ansichtsinformation.
-- **`commands.ts`:** `Strg+B`/`Strg+I`.
-
-**Tabellen ohne Springen:** Die gerenderte Tabelle ist ein Block-Widget. Jede Tabellenzeile ist genau eine Zeilenhöhe hoch, die Kopfzeile zwei, weil sie im Rohtext zusammen mit der `|---|`-Zeile zwei Zeilen belegt. Rahmen sind `box-shadow`s ohne Platzbedarf. Beim Wechsel zwischen gerendert und Rohtext bleibt der Inhalt darunter deshalb an Ort und Stelle. Das gilt nicht, wenn Zellen umbrechen.
-
-**Bekannte Einschränkungen:**
-- Mermaid und KaTeX (in Phase 3 optional) sind nicht umgesetzt.
-- Wird beim Springen über sehr große Dokumente direkt geklickt, während CodeMirror noch nachmisst, kann der Klick ins Leere gehen. Das ist ein Fehler in `@codemirror/view` (`posAtCoords`) und kommt in der Praxis selten vor.
-- Die Frontmatter-Anzeige ist kein vollständiger YAML-Parser. Verschachtelte Maps erscheinen als erste Zeile.
-
-## Testen von Phase 3
-
-1. `F5` → `samples/showcase.md`. Oben steht der Block „Eigenschaften“. Ein Klick auf den Kopf klappt ihn ein, ein Klick auf eine Zeile springt in die YAML.
-2. **Codeblöcke:** Syntax-Highlighting in den Theme-Farben. Ein Klick in den Block zeigt die Fences, dabei springt nichts. Der Kopier-Button kopiert exakt den Quelltext, Tabs bleiben erhalten.
-3. **Bilder:** Lokal, per https und mit Breite. Fehlende Bilder erscheinen als Platzhalter. Ein Bild mit relativem Pfad aus einem Unterordner zeigt `samples/notizen/unterordner.md`.
-4. **Tabellen:** Reinklicken zeigt den Rohtext, rausklicken die gerenderte Tabelle. Der Text darunter bewegt sich dabei nicht. `Strg+Klick` auf einen Link in einer Zelle öffnet ihn.
-5. **Callouts:** Jeder Typ hat eine eigene Farbe und ein eigenes Icon, auch im Dark Theme. Der Pfeil klappt ein und aus, die Datei bleibt dabei unverändert.
-6. **Theme wechseln** (`Strg+K Strg+T`): Hintergrund, Callouts, Tabellen und die Code-Farben folgen sofort.
-7. **Große Datei:** `npm run sample:large`, dann `samples/large.md` öffnen. Tippen und Cursorbewegung bleiben flüssig.
-
-## Testen von Phase 2
-
-1. `F5` → `samples/showcase.md`: Außerhalb des Cursors sieht alles wie gerendertes Markdown aus.
-2. Cursor in `**fett**` setzen → `**` erscheint, Cursor raus → verschwindet. Auf eine Überschriftenzeile wechseln → `## ` erscheint.
-3. Mit den Pfeiltasten durch Listen und Links laufen: Der Cursor landet nie in unsichtbaren Zeichen.
-4. Checkbox anklicken → `[ ]` ↔ `[x]` im Quelltext, im parallel geöffneten Text-Editor sichtbar.
-5. `Strg+Klick` auf die Links im Abschnitt „Links“ (extern, `.md`, andere Datei, fehlende Datei).
-6. Wort markieren, `Strg+B` / `Strg+I`.
-7. `npm run sample:large`, dann `samples/large.md` öffnen → Tippen und Scrollen bleiben flüssig.
-
-## Testen von Phase 1
-
-1. `F5` → `samples/showcase.md` öffnen.
-2. Tippen → Tab wird dirty, `Strg+S` speichert.
-3. „Als Quelltext öffnen“ im Split (`Strg+\` und dann „Reopen With… → Text Editor“) → in beiden Editoren tippen, Änderungen erscheinen jeweils im anderen.
-4. Datei extern ändern (z. B. `git checkout -- samples/showcase.md`) → Webview aktualisiert sich.
-5. `samples/crlf.md` bearbeiten und speichern → `file samples/crlf.md` meldet weiterhin CRLF.
-6. `Strg+Z`, `Strg+F` → genau eine Aktion.
-7. Farbschema wechseln (`Strg+K Strg+T`) → Editor passt sich sofort an.
+- [CodeMirror](https://codemirror.net) and [Lezer](https://lezer.codemirror.net) by Marijn Haverbeke, the editor and parser underneath
+- [Codicons](https://github.com/microsoft/vscode-codicons) by Microsoft, the icons
+- [Obsidian](https://obsidian.md), for showing how pleasant live preview editing can be

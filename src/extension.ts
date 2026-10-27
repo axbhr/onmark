@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext): void {
       supportsMultipleEditorsPerDocument: true,
     }),
     vscode.commands.registerCommand(`${EXTENSION_ID}.openSource`, openWith('default')),
-    vscode.commands.registerCommand(`${EXTENSION_ID}.openLivePreview`, openWith(VIEW_TYPE)),
+    vscode.commands.registerCommand(`${EXTENSION_ID}.openPreview`, openWith(VIEW_TYPE)),
   );
 }
 

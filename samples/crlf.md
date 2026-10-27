@@ -1,7 +1,7 @@
-# CRLF-Datei
+# CRLF file
 
-Diese Datei nutzt **CRLF**-Zeilenenden.
-Nach dem Bearbeiten muss sie weiterhin CRLF haben.
+This file uses **CRLF** line endings.
+After editing it must still use CRLF.
 
-- eins
-- zwei
+- one
+- two

@@ -1,0 +1,65 @@
+# dev: verifies every change. Runs on pull requests and feature branches, and is reused by the
+# pre-release (test) and release (prod) workflows before they publish anything.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main, develop]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run package
+
+  package:
+    name: Package
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run package
+      - name: Third-party notices are up to date
+        run: |
+          npm run notices
+          git diff --exit-code THIRD_PARTY_NOTICES.md || {
+            echo "::error::THIRD_PARTY_NOTICES.md is outdated. Run 'npm run package && npm run notices' and commit the result."
+            exit 1
+          }
+      - name: Set development version
+        id: version
+        run: |
+          version=$(node scripts/release.mjs prerelease "$GITHUB_RUN_NUMBER")
+          npm version "$version" --no-git-tag-version
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - run: npx vsce package --no-dependencies --pre-release --out "onmark-${{ steps.version.outputs.version }}-dev.vsix"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: onmark-dev-vsix
+          path: '*.vsix'
+          retention-days: 14

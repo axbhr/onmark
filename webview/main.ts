@@ -18,9 +18,9 @@ let version = -1;
 
 function applySettings(settings: Settings): void {
   const style = document.documentElement.style;
-  style.setProperty('--ob-font-family', settings.fontFamily || 'var(--vscode-font-family)');
-  style.setProperty('--ob-font-size', `${settings.fontSize}px`);
-  style.setProperty('--ob-max-width', settings.readableLineLength ? `${settings.maxWidth}px` : 'none');
+  style.setProperty('--om-font-family', settings.fontFamily || 'var(--vscode-font-family)');
+  style.setProperty('--om-font-size', `${settings.fontSize}px`);
+  style.setProperty('--om-max-width', settings.readableLineLength ? `${settings.maxWidth}px` : 'none');
 }
 
 window.addEventListener('message', (event: MessageEvent<HostMessage>) => {

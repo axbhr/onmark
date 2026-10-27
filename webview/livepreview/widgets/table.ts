@@ -27,9 +27,9 @@ export class TableWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.className = 'cm-ob-table-wrap';
+    wrap.className = 'cm-om-table-wrap';
     const table = document.createElement('table');
-    table.className = 'cm-ob-table';
+    table.className = 'cm-om-table';
     const columns = Math.max(...this.rows.map((r) => r.length));
     this.rows.forEach((cells, r) => {
       const section = r === 0 ? table.createTHead() : (table.tBodies[0] ?? table.createTBody());

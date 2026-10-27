@@ -20,15 +20,15 @@ export const frontmatterHandlers: NodeHandlers = {
 export const frontmatterClick = EditorView.domEventHandlers({
   mousedown(event, view) {
     const target = event.target as HTMLElement;
-    const box = target.closest('.cm-ob-properties');
+    const box = target.closest('.cm-om-properties');
     if (event.button !== 0 || !box) return false;
     event.preventDefault();
     const start = view.posAtDOM(box);
-    if (target.closest('.cm-ob-properties-head')) {
+    if (target.closest('.cm-om-properties-head')) {
       view.dispatch({ effects: toggleFold.of(start) });
       return true;
     }
-    const yamlLine = Number((target.closest('.cm-ob-property') as HTMLElement | null)?.dataset.line ?? 0);
+    const yamlLine = Number((target.closest('.cm-om-property') as HTMLElement | null)?.dataset.line ?? 0);
     const line = view.state.doc.lineAt(start).number + 1 + yamlLine;
     const pos = view.state.doc.line(Math.min(line, view.state.doc.lines)).to;
     view.dispatch({ selection: EditorSelection.cursor(pos) });
@@ -38,14 +38,14 @@ export const frontmatterClick = EditorView.domEventHandlers({
 });
 
 export const frontmatterTheme = EditorView.baseTheme({
-  '.cm-ob-properties': {
+  '.cm-om-properties': {
     margin: '0.3em 0 0.8em',
     padding: '0.3em 0',
     borderBottom: '1px solid var(--vscode-textSeparator-foreground, var(--vscode-editorGroup-border))',
     fontSize: '0.9em',
     cursor: 'text',
   },
-  '.cm-ob-properties-head': {
+  '.cm-om-properties-head': {
     display: 'flex',
     alignItems: 'center',
     gap: '0.3em',
@@ -53,11 +53,11 @@ export const frontmatterTheme = EditorView.baseTheme({
     cursor: 'pointer',
     userSelect: 'none',
   },
-  '.cm-ob-property': { display: 'flex', gap: '1em', padding: '0.15em 0 0.15em 1.3em' },
-  '.cm-ob-property:hover': { backgroundColor: 'var(--vscode-list-hoverBackground)' },
-  '.cm-ob-property-key': { flex: '0 0 9em', color: 'var(--vscode-descriptionForeground)', overflowWrap: 'anywhere' },
-  '.cm-ob-property-value': { display: 'flex', flexWrap: 'wrap', gap: '0.3em', overflowWrap: 'anywhere' },
-  '.cm-ob-chip': {
+  '.cm-om-property': { display: 'flex', gap: '1em', padding: '0.15em 0 0.15em 1.3em' },
+  '.cm-om-property:hover': { backgroundColor: 'var(--vscode-list-hoverBackground)' },
+  '.cm-om-property-key': { flex: '0 0 9em', color: 'var(--vscode-descriptionForeground)', overflowWrap: 'anywhere' },
+  '.cm-om-property-value': { display: 'flex', flexWrap: 'wrap', gap: '0.3em', overflowWrap: 'anywhere' },
+  '.cm-om-chip': {
     padding: '0 0.5em',
     borderRadius: '1em',
     backgroundColor: 'var(--vscode-badge-background)',

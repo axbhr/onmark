@@ -9,8 +9,8 @@ export const codeBlockHandlers: NodeHandlers = {
     const first = doc.lineAt(node.from);
     const last = doc.lineAt(node.to);
     for (let n = first.number; n <= last.number; n++) {
-      const edge = n === first.number ? ' cm-ob-codeblock-begin' : n === last.number ? ' cm-ob-codeblock-end' : '';
-      ctx.line(doc.line(n).from, `cm-ob-codeblock${edge}`);
+      const edge = n === first.number ? ' cm-om-codeblock-begin' : n === last.number ? ' cm-om-codeblock-end' : '';
+      ctx.line(doc.line(n).from, `cm-om-codeblock${edge}`);
     }
     // Fences are only shown while the cursor is inside the block. Their lines stay so heights never change.
     if (ctx.touches(node.from, node.to)) return;
@@ -26,7 +26,7 @@ export const codeBlockHandlers: NodeHandlers = {
 export function codeBlockCopy(copy: (text: string) => void) {
   return EditorView.domEventHandlers({
     mousedown(event, view) {
-      const button = (event.target as HTMLElement).closest('.cm-ob-code-copy');
+      const button = (event.target as HTMLElement).closest('.cm-om-code-copy');
       if (event.button !== 0 || !button) return false;
       event.preventDefault();
       for (let node = syntaxTree(view.state).resolveInner(view.posAtDOM(button), 1); node; node = node.parent!) {
@@ -41,7 +41,7 @@ export function codeBlockCopy(copy: (text: string) => void) {
 }
 
 export const codeBlockTheme = EditorView.baseTheme({
-  '.cm-line.cm-ob-codeblock': {
+  '.cm-line.cm-om-codeblock': {
     fontFamily: 'var(--vscode-editor-font-family)',
     fontSize: 'var(--vscode-editor-font-size)',
     fontWeight: 'var(--vscode-editor-font-weight)',
@@ -50,17 +50,17 @@ export const codeBlockTheme = EditorView.baseTheme({
     borderLeft: '1px solid var(--vscode-contrastBorder, transparent)',
     borderRight: '1px solid var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-ob-codeblock-begin': {
+  '.cm-line.cm-om-codeblock-begin': {
     borderTopLeftRadius: '4px',
     borderTopRightRadius: '4px',
     boxShadow: 'inset 0 1px 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-ob-codeblock-end': {
+  '.cm-line.cm-om-codeblock-end': {
     borderBottomLeftRadius: '4px',
     borderBottomRightRadius: '4px',
     boxShadow: 'inset 0 -1px 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-ob-code-header': {
+  '.cm-om-code-header': {
     display: 'inline-flex',
     width: '100%',
     justifyContent: 'space-between',
@@ -70,7 +70,7 @@ export const codeBlockTheme = EditorView.baseTheme({
     fontFamily: 'var(--vscode-font-family)',
     fontSize: '0.85em',
   },
-  '.cm-ob-code-copy': {
+  '.cm-om-code-copy': {
     display: 'inline-flex',
     padding: '0 2px',
     border: 'none',
@@ -79,5 +79,5 @@ export const codeBlockTheme = EditorView.baseTheme({
     color: 'var(--vscode-icon-foreground)',
     cursor: 'pointer',
   },
-  '.cm-ob-code-copy:hover': { backgroundColor: 'var(--vscode-toolbar-hoverBackground)' },
+  '.cm-om-code-copy:hover': { backgroundColor: 'var(--vscode-toolbar-hoverBackground)' },
 });

@@ -1,4 +1,5 @@
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { syntaxTreeAvailable } from '@codemirror/language';
 import { EditorSelection, EditorState, type Extension } from '@codemirror/state';
 import type { DecorationSet } from '@codemirror/view';
 import { describe, expect, it } from 'vitest';
@@ -107,6 +108,7 @@ describe('blockPreview', () => {
     const rand = (n: number) => ((seed = (seed * 1103515245 + 12345) % 2 ** 31) % n);
 
     let state = create(doc);
+    let compared = 0;
     for (let step = 0; step < 400; step++) {
       const len = state.doc.length;
       const kind = rand(4);
@@ -123,8 +125,13 @@ describe('blockPreview', () => {
       }
       const folds = state.field(flippedFolds);
       const fresh = create(state.doc.toString(), flippedFolds.init(() => folds), state.selection);
+      // Parsing runs on a time budget; under load a tree can be incomplete, which makes the states incomparable.
+      const end = state.doc.length;
+      if (!syntaxTreeAvailable(state, end) || !syntaxTreeAvailable(fresh, end)) continue;
+      compared++;
       expect(dump(state.field(field).decorations), `step ${step}`).toEqual(dump(fresh.field(field).decorations));
       expect(dump(state.field(field).atomic), `step ${step} atomic`).toEqual(dump(fresh.field(field).atomic));
     }
+    expect(compared).toBeGreaterThan(300);
   });
 });

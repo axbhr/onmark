@@ -1,7 +1,7 @@
 :root {
-  --ob-font-family: var(--vscode-font-family);
-  --ob-font-size: 16px;
-  --ob-max-width: 750px;
+  --om-font-family: var(--vscode-font-family);
+  --om-font-size: 16px;
+  --om-max-width: 750px;
 }
 
 html,

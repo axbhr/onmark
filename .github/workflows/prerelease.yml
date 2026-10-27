@@ -1,0 +1,61 @@
+# test: every push to `develop` is published as a pre-release (odd minor, e.g. 0.3.<run>) to the
+# VS Code Marketplace and Open VSX (VSCodium). Users opt in via "Switch to Pre-Release Version".
+name: Pre-release
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prerelease
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: Publish pre-release
+    needs: ci
+    runs-on: ubuntu-latest
+    environment:
+      name: test
+      url: https://marketplace.visualstudio.com/items?itemName=axbhr.onmark
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Set pre-release version
+        id: version
+        run: |
+          version=$(node scripts/release.mjs prerelease "$GITHUB_RUN_NUMBER")
+          npm version "$version" --no-git-tag-version
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "### Pre-release ${version}" >> "$GITHUB_STEP_SUMMARY"
+      - run: npx vsce package --no-dependencies --pre-release --out onmark.vsix
+      - uses: actions/upload-artifact@v4
+        with:
+          name: onmark-${{ steps.version.outputs.version }}-pre-release
+          path: onmark.vsix
+          retention-days: 30
+      - name: Publish to Visual Studio Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then echo "::warning::VSCE_PAT is not set in the 'test' environment; skipping the Marketplace."; exit 0; fi
+          npx vsce publish --pre-release --packagePath onmark.vsix --skip-duplicate
+      - name: Publish to Open VSX (VSCodium)
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          if [ -z "$OVSX_PAT" ]; then echo "::warning::OVSX_PAT is not set in the 'test' environment; skipping Open VSX."; exit 0; fi
+          npx ovsx publish onmark.vsix --pre-release --skip-duplicate

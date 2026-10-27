@@ -36,7 +36,7 @@ export function parseLinkTarget(raw: string): LinkTarget | undefined {
 export async function openLink(raw: string, toSide: boolean, document: vscode.TextDocument): Promise<void> {
   const target = parseLinkTarget(raw);
   if (!target) {
-    void vscode.window.showWarningMessage(`Link kann nicht geöffnet werden: ${raw}`);
+    void vscode.window.showWarningMessage(`Cannot open link: ${raw}`);
     return;
   }
   if (target.kind === 'external') {
@@ -50,7 +50,7 @@ export async function openLink(raw: string, toSide: boolean, document: vscode.Te
   try {
     await vscode.workspace.fs.stat(uri);
   } catch {
-    void vscode.window.showWarningMessage(`Datei nicht gefunden: ${vscode.workspace.asRelativePath(uri)}`);
+    void vscode.window.showWarningMessage(`File not found: ${vscode.workspace.asRelativePath(uri)}`);
     return;
   }
   const column = toSide ? vscode.ViewColumn.Beside : vscode.ViewColumn.Active;

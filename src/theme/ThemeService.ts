@@ -66,7 +66,7 @@ export class ThemeService implements vscode.Disposable {
       const custom = vscode.workspace.getConfiguration('editor').get('tokenColorCustomizations');
       return resolveTokenTheme([...rules, ...customizationRules(custom, names)]);
     } catch (error) {
-      console.warn('[obsidianate] Could not read color theme', error);
+      console.warn('[onmark] Could not read color theme', error);
       return {};
     }
   }

@@ -4,7 +4,7 @@ import { EditorView } from '@codemirror/view';
 import type { SyntaxNode } from '@lezer/common';
 import type { DecorationContext, NodeHandlers } from './context';
 
-const LINK = 'cm-ob-link';
+const LINK = 'cm-om-link';
 
 function hideAround(node: SyntaxNode, textFrom: number, textTo: number, ctx: DecorationContext) {
   ctx.hide(node.from, textFrom);
