@@ -1,8 +1,10 @@
 import { EditorView } from '@codemirror/view';
-import type { NodeHandlers } from './inline';
+import { calloutInfo } from './callouts';
+import type { NodeHandlers } from './context';
 
 export const quoteHandlers: NodeHandlers = {
   Blockquote(node, ctx) {
+    if (calloutInfo(ctx.state, node)) return;
     const { doc } = ctx.state;
     const last = doc.lineAt(node.to).number;
     for (let n = doc.lineAt(node.from).number; n <= last; n++) ctx.line(doc.line(n).from, 'cm-ob-quote');
@@ -19,6 +21,5 @@ export const quoteTheme = EditorView.baseTheme({
     borderLeft: '3px solid var(--vscode-textBlockQuote-border, var(--vscode-textLink-foreground))',
     paddingLeft: '1em',
     backgroundColor: 'var(--vscode-textBlockQuote-background)',
-    color: 'var(--vscode-descriptionForeground)',
   },
 });

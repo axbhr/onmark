@@ -40,6 +40,7 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
               tokens,
               eol: document.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n',
               baseUri: `${webview.asWebviewUri(docDir).toString()}/`,
+              rootUri: `${webview.asWebviewUri(vscode.workspace.getWorkspaceFolder(document.uri)?.uri ?? docDir).toString()}/`,
               settings: readSettings(),
             });
             break;
@@ -49,6 +50,9 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             break;
           case 'openLink':
             void openLink(message.target, message.modifier === 'side', document);
+            break;
+          case 'copy':
+            void vscode.env.clipboard.writeText(message.text);
             break;
         }
       }),

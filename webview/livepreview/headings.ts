@@ -1,6 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import type { SyntaxNode } from '@lezer/common';
-import type { DecorationContext, NodeHandlers } from './inline';
+import type { DecorationContext, NodeHandlers } from './context';
 
 function heading(level: number) {
   return (node: SyntaxNode, ctx: DecorationContext) => {

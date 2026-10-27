@@ -13,7 +13,8 @@ export type WebviewMessage =
   | { type: 'ready' }
   | { type: 'edit'; baseVersion: number; changes: Change[] }
   /** `side`: open in the editor group beside the current one. */
-  | { type: 'openLink'; target: string; modifier: 'none' | 'side' };
+  | { type: 'openLink'; target: string; modifier: 'none' | 'side' }
+  | { type: 'copy'; text: string };
 
 /** Messages sent from the extension host to the webview. Texts are always LF-normalized. */
 export type HostMessage =
@@ -22,7 +23,10 @@ export type HostMessage =
       text: string;
       version: number;
       eol: '\n' | '\r\n';
+      /** Webview URI of the note's folder, with trailing slash. */
       baseUri: string;
+      /** Webview URI of the workspace folder (or the note's folder), with trailing slash. */
+      rootUri: string;
       settings: Settings;
       tokens: TokenTheme;
     }

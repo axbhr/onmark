@@ -1,3 +1,4 @@
+import '@vscode/codicons/dist/codicon.css';
 import './theme.css';
 import type { HostMessage, Settings, WebviewMessage } from '../src/shared/protocol';
 import { createEditor, type Editor, type ViewState } from './editor';
@@ -40,6 +41,9 @@ window.addEventListener('message', (event: MessageEvent<HostMessage>) => {
         nonce,
         restore: vscode.getState(),
         onEdit: (changes) => vscode.postMessage({ type: 'edit', baseVersion: version, changes }),
+        onCopy: (text) => vscode.postMessage({ type: 'copy', text }),
+        baseUri: message.baseUri,
+        rootUri: message.rootUri,
         onOpenLink: (target, toSide) =>
           vscode.postMessage({ type: 'openLink', target, modifier: toSide ? 'side' : 'none' }),
         onViewState: (state) => vscode.setState(state),

@@ -1,6 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import type { SyntaxNode } from '@lezer/common';
-import type { DecorationContext, NodeHandlers } from './inline';
+import type { DecorationContext, NodeHandlers } from './context';
 
 /** Hides the direct `*Mark` children of an inline element unless the selection touches it. */
 function hideMarks(node: SyntaxNode, ctx: DecorationContext) {
@@ -26,6 +26,12 @@ export const formattingHandlers: NodeHandlers = {
 };
 
 export const formattingTheme = EditorView.baseTheme({
+  // Same look as the `==highlight==` token style, for rendered widgets (tables).
+  '.cm-ob-highlight': {
+    color: 'inherit',
+    backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)',
+    borderRadius: '2px',
+  },
   '.cm-ob-code': {
     backgroundColor: 'var(--vscode-textPreformat-background, var(--vscode-textCodeBlock-background))',
     outline: '1px solid var(--vscode-contrastBorder, transparent)',

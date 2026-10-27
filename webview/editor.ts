@@ -1,12 +1,13 @@
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { languages } from '@codemirror/language-data';
 import { syntaxHighlighting } from '@codemirror/language';
 import { search, searchKeymap } from '@codemirror/search';
 import { Annotation, EditorSelection, EditorState, Transaction, type Text } from '@codemirror/state';
 import { EditorView, drawSelection, keymap } from '@codemirror/view';
 import { minimalDiff, type Change, type Pos } from '../src/shared/text';
 import type { TokenTheme } from '../src/shared/tokens';
-import { Highlight, livePreview } from './livepreview';
+import { Frontmatter, Highlight, livePreview } from './livepreview';
 import type { OpenLink } from './livepreview/links';
 import { followThemeKind, setTokenTheme, vscodeTheme } from './syntaxTheme';
 import { editorTheme, markdownHighlight } from './theme';
@@ -28,7 +29,11 @@ export interface EditorOptions {
   restore?: ViewState;
   onEdit(changes: Change[]): void;
   onOpenLink: OpenLink;
+  onCopy(text: string): void;
   onViewState(state: ViewState): void;
+  /** Webview URIs (trailing slash) of the note's folder and the workspace folder. */
+  baseUri: string;
+  rootUri: string;
 }
 
 export interface Editor {
@@ -40,6 +45,9 @@ const toPos = (doc: Text, offset: number): Pos => {
   const line = doc.lineAt(offset);
   return { line: line.number - 1, ch: offset - line.from };
 };
+
+/** Start of the first line after YAML frontmatter, so a freshly opened note shows its properties rendered. */
+const afterFrontmatter = (text: string) => /^---\n(?:.*\n)*?(?:---|\.\.\.)[ \t]*(?:\n|$)/.exec(text)?.[0].length ?? 0;
 
 const isUndoRedo = (e: KeyboardEvent) =>
   (e.ctrlKey || e.metaKey) && !e.altKey && (e.key.toLowerCase() === 'z' || e.key.toLowerCase() === 'y');
@@ -62,14 +70,19 @@ export function createEditor(options: EditorOptions): Editor {
       doc: options.text,
       selection: restore
         ? EditorSelection.single(Math.min(restore.anchor, length), Math.min(restore.head, length))
-        : undefined,
+        : EditorSelection.single(afterFrontmatter(options.text)),
       extensions: [
         history(),
         drawSelection(),
         search({ top: true }),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
-        markdown({ base: markdownLanguage, extensions: [Highlight] }),
-        livePreview({ openLink: options.onOpenLink }),
+        markdown({ base: markdownLanguage, codeLanguages: languages, extensions: [Highlight, Frontmatter] }),
+        livePreview({
+          openLink: options.onOpenLink,
+          copy: options.onCopy,
+          base: options.baseUri,
+          root: options.rootUri,
+        }),
         syntaxHighlighting(markdownHighlight),
         vscodeTheme(options.tokens),
         editorTheme,
