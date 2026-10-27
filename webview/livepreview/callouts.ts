@@ -66,9 +66,9 @@ export const calloutHandlers: NodeHandlers = {
       !ctx.touches(first.to + 1, node.to);
 
     for (let n = first.number; n <= (folded ? first.number : last.number); n++) {
-      const edge = n === first.number ? ' cm-ob-callout-title' : '';
-      const end = n === last.number || folded ? ' cm-ob-callout-last' : '';
-      ctx.line(doc.line(n).from, `cm-ob-callout cm-ob-callout-${info.group}${edge}${end}`);
+      const edge = n === first.number ? ' cm-om-callout-title' : '';
+      const end = n === last.number || folded ? ' cm-om-callout-last' : '';
+      ctx.line(doc.line(n).from, `cm-om-callout cm-om-callout-${info.group}${edge}${end}`);
     }
     if (folded && last.number > first.number) ctx.hide(first.to, node.to);
 
@@ -83,7 +83,7 @@ export const calloutHandlers: NodeHandlers = {
 /** Clicking the chevron flips the fold state (view only). */
 export const calloutFoldClick = EditorView.domEventHandlers({
   mousedown(event, view) {
-    const target = (event.target as HTMLElement).closest('.cm-ob-callout .cm-ob-fold');
+    const target = (event.target as HTMLElement).closest('.cm-om-callout .cm-om-fold');
     if (event.button !== 0 || !target) return false;
     event.preventDefault();
     view.dispatch({ effects: toggleFold.of(view.state.doc.lineAt(view.posAtDOM(target)).from) });
@@ -93,36 +93,36 @@ export const calloutFoldClick = EditorView.domEventHandlers({
 
 const groupStyles = Object.fromEntries(
   Object.entries(GROUPS).map(([group, { color }]) => [
-    `.cm-line.cm-ob-callout-${group}`,
-    { '--ob-callout': `var(--vscode-${color})` },
+    `.cm-line.cm-om-callout-${group}`,
+    { '--om-callout': `var(--vscode-${color})` },
   ]),
 );
 
 export const calloutTheme = EditorView.baseTheme({
   ...groupStyles,
-  '.cm-line.cm-ob-callout': {
-    backgroundColor: 'color-mix(in srgb, var(--ob-callout) 10%, var(--vscode-editor-background))',
+  '.cm-line.cm-om-callout': {
+    backgroundColor: 'color-mix(in srgb, var(--om-callout) 10%, var(--vscode-editor-background))',
     padding: '0 1em',
     borderLeft: '1px solid var(--vscode-contrastBorder, transparent)',
     borderRight: '1px solid var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-ob-callout-title': {
-    color: 'var(--ob-callout)',
+  '.cm-line.cm-om-callout-title': {
+    color: 'var(--om-callout)',
     fontWeight: 'bold',
     paddingTop: '0.3em',
     borderTopLeftRadius: '4px',
     borderTopRightRadius: '4px',
     boxShadow: 'inset 0 1px 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-ob-callout-last': {
+  '.cm-line.cm-om-callout-last': {
     paddingBottom: '0.3em',
     borderBottomLeftRadius: '4px',
     borderBottomRightRadius: '4px',
     boxShadow: 'inset 0 -1px 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-ob-callout-head': { display: 'inline-flex', alignItems: 'center', gap: '0.4em', marginRight: '0.4em' },
-  '.cm-ob-callout-head .codicon': { fontSize: '1.05em' },
-  '.cm-ob-fold': {
+  '.cm-om-callout-head': { display: 'inline-flex', alignItems: 'center', gap: '0.4em', marginRight: '0.4em' },
+  '.cm-om-callout-head .codicon': { fontSize: '1.05em' },
+  '.cm-om-fold': {
     display: 'inline-flex',
     verticalAlign: 'middle',
     marginLeft: '0.3em',
@@ -130,5 +130,5 @@ export const calloutTheme = EditorView.baseTheme({
     borderRadius: '3px',
     color: 'var(--vscode-icon-foreground)',
   },
-  '.cm-ob-fold:hover': { backgroundColor: 'var(--vscode-toolbar-hoverBackground)' },
+  '.cm-om-fold:hover': { backgroundColor: 'var(--vscode-toolbar-hoverBackground)' },
 });

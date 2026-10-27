@@ -60,7 +60,7 @@ export const tableHandlers: NodeHandlers = {
 export const tableClick = EditorView.domEventHandlers({
   mousedown(event, view) {
     const target = event.target as HTMLElement;
-    const wrap = target.closest('.cm-ob-table-wrap');
+    const wrap = target.closest('.cm-om-table-wrap');
     if (event.button !== 0 || !wrap || event.ctrlKey || event.metaKey) return false;
     event.preventDefault();
     const cell = target.closest<HTMLElement>('[data-offset]');
@@ -75,19 +75,19 @@ const border = 'var(--vscode-editorGroup-border, var(--vscode-textSeparator-fore
 const headerRule = 'inset 0 -2px 0 var(--vscode-textSeparator-foreground, var(--vscode-descriptionForeground))';
 
 export const tableTheme = EditorView.baseTheme({
-  '.cm-ob-table-wrap': { overflowX: 'auto', cursor: 'text' },
+  '.cm-om-table-wrap': { overflowX: 'auto', cursor: 'text' },
   // Borders are box-shadows so they take no space: row heights must equal raw line heights.
-  '.cm-ob-table': { borderCollapse: 'separate', borderSpacing: '0', maxWidth: '100%' },
-  '.cm-ob-table td, .cm-ob-table th': {
+  '.cm-om-table': { borderCollapse: 'separate', borderSpacing: '0', maxWidth: '100%' },
+  '.cm-om-table td, .cm-om-table th': {
     padding: '0 0.75em',
     lineHeight: 'inherit',
     verticalAlign: 'middle',
     boxShadow: `inset 0 -1px 0 ${border}, inset -1px 0 0 ${border}`,
   },
-  '.cm-ob-table td:last-child': { boxShadow: `inset 0 -1px 0 ${border}` },
+  '.cm-om-table td:last-child': { boxShadow: `inset 0 -1px 0 ${border}` },
   // Header row covers two raw lines (header + delimiter): 1.6em content + 1.6em padding.
-  '.cm-ob-table th': { padding: '0.8em 0.75em', textAlign: 'left', boxShadow: `${headerRule}, inset -1px 0 0 ${border}` },
-  '.cm-ob-table th:last-child': { boxShadow: headerRule },
-  '.cm-ob-table tbody tr:hover': { backgroundColor: 'var(--vscode-list-hoverBackground)' },
-  '.cm-ob-inline-image': { maxHeight: '1.4em', verticalAlign: 'middle' },
+  '.cm-om-table th': { padding: '0.8em 0.75em', textAlign: 'left', boxShadow: `${headerRule}, inset -1px 0 0 ${border}` },
+  '.cm-om-table th:last-child': { boxShadow: headerRule },
+  '.cm-om-table tbody tr:hover': { backgroundColor: 'var(--vscode-list-hoverBackground)' },
+  '.cm-om-inline-image': { maxHeight: '1.4em', verticalAlign: 'middle' },
 });

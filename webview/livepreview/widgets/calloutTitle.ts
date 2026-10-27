@@ -17,7 +17,7 @@ export class CalloutTitleWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const wrap = document.createElement('span');
-    wrap.className = 'cm-ob-callout-head';
+    wrap.className = 'cm-om-callout-head';
     wrap.append(icon(this.iconName));
     if (this.fallbackTitle) {
       const title = document.createElement('span');

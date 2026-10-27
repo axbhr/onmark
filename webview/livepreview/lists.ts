@@ -18,7 +18,7 @@ export const listHandlers: NodeHandlers = {
     for (let n: typeof item | null = item; n; n = n.parent) {
       if (n.name === 'BulletList' || n.name === 'OrderedList') depth++;
     }
-    ctx.line(node.from, `cm-ob-li cm-ob-li-d${Math.min(depth, MAX_DEPTH)}`);
+    ctx.line(node.from, `cm-om-li cm-om-li-d${Math.min(depth, MAX_DEPTH)}`);
 
     // Indentation is rendered via the line class; only hide the whitespace directly before the marker
     // (never a preceding `>` quote marker).
@@ -31,7 +31,7 @@ export const listHandlers: NodeHandlers = {
     const withSpace = (pos: number) => (doc.sliceString(pos, pos + 1) === ' ' ? pos + 1 : pos);
     if (taskMarker?.name === 'TaskMarker') {
       const done = /x/i.test(doc.sliceString(taskMarker.from, taskMarker.to));
-      if (done) ctx.line(node.from, 'cm-ob-task-done');
+      if (done) ctx.line(node.from, 'cm-om-task-done');
       ctx.widget(bulletList ? node.from : taskMarker.from, withSpace(taskMarker.to), done ? checked : unchecked);
     } else if (bulletList) {
       ctx.widget(node.from, withSpace(node.to), bullet);
@@ -45,7 +45,7 @@ const TASK = /^(\s*(?:[-*+]|\d+[.)])\s+\[)([ xX])\]/;
 export const checkboxClick = EditorView.domEventHandlers({
   mousedown(event, view) {
     const target = event.target as HTMLElement;
-    if (event.button !== 0 || !target.closest('.cm-ob-checkbox')) return false;
+    if (event.button !== 0 || !target.closest('.cm-om-checkbox')) return false;
     event.preventDefault();
     const line = view.state.doc.lineAt(view.posAtDOM(target));
     const match = TASK.exec(line.text);
@@ -59,21 +59,21 @@ export const checkboxClick = EditorView.domEventHandlers({
 
 const depthStyles = Object.fromEntries(
   Array.from({ length: MAX_DEPTH + 1 }, (_, d) => [
-    `.cm-line.cm-ob-li-d${d}`,
+    `.cm-line.cm-om-li-d${d}`,
     { paddingLeft: `calc(${d * 1.5 + 1.5}em + 6px)`, textIndent: '-1.5em' },
   ]),
 );
 
 export const listTheme = EditorView.baseTheme({
   ...depthStyles,
-  '.cm-ob-bullet': {
+  '.cm-om-bullet': {
     display: 'inline-block',
     width: '1.5em',
     textIndent: '0',
     textAlign: 'center',
     color: 'var(--vscode-descriptionForeground)',
   },
-  '.cm-ob-checkbox': {
+  '.cm-om-checkbox': {
     display: 'inline-block',
     boxSizing: 'border-box',
     width: '1em',
@@ -86,11 +86,11 @@ export const listTheme = EditorView.baseTheme({
     backgroundColor: 'var(--vscode-checkbox-background)',
     cursor: 'pointer',
   },
-  '.cm-ob-checkbox[aria-checked=true]': {
+  '.cm-om-checkbox[aria-checked=true]': {
     backgroundColor: 'var(--vscode-textLink-foreground)',
     borderColor: 'var(--vscode-textLink-foreground)',
   },
-  '.cm-ob-checkbox[aria-checked=true]::after': {
+  '.cm-om-checkbox[aria-checked=true]::after': {
     content: '"✓"',
     display: 'block',
     color: 'var(--vscode-editor-background)',
@@ -99,7 +99,7 @@ export const listTheme = EditorView.baseTheme({
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  '.cm-line.cm-ob-task-done': {
+  '.cm-line.cm-om-task-done': {
     color: 'var(--vscode-descriptionForeground)',
     textDecoration: 'line-through',
   },

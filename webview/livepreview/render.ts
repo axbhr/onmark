@@ -9,8 +9,8 @@ const ELEMENTS: Record<string, [tag: string, cls?: string]> = {
   Emphasis: ['em'],
   StrongEmphasis: ['strong'],
   Strikethrough: ['s'],
-  Highlight: ['mark', 'cm-ob-highlight'],
-  InlineCode: ['code', 'cm-ob-code'],
+  Highlight: ['mark', 'cm-om-highlight'],
+  InlineCode: ['code', 'cm-om-code'],
 };
 /** Syntax that is never shown in rendered output. */
 const HIDDEN = new Set(['EmphasisMark', 'CodeMark', 'StrikethroughMark', 'HighlightMark', 'LinkMark', 'LinkTitle']);
@@ -51,7 +51,7 @@ function appendNode(parent: Node, node: SyntaxNode, text: string, base: string, 
   } else if (node.name === 'Link' || node.name === 'Autolink' || node.name === 'URL') {
     const url = node.name === 'URL' ? node : node.getChild('URL');
     const el = document.createElement('span');
-    el.className = 'cm-ob-link';
+    el.className = 'cm-om-link';
     if (url) el.dataset.href = text.slice(url.from, url.to).replace(/^<(.*)>$/, '$1');
     if (node.name === 'Link') appendChildren(el, node, text, base, root);
     else el.textContent = el.dataset.href ?? '';
@@ -60,7 +60,7 @@ function appendNode(parent: Node, node: SyntaxNode, text: string, base: string, 
     const url = node.getChild('URL');
     const marks = node.getChildren('LinkMark');
     const img = document.createElement('img');
-    img.className = 'cm-ob-inline-image';
+    img.className = 'cm-om-inline-image';
     img.alt = marks.length > 1 ? text.slice(marks[0].to, marks[1].from) : '';
     const src = url && resolveImageSrc(text.slice(url.from, url.to), base, root);
     if (src) img.src = src;

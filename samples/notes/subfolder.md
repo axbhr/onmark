@@ -1,11 +1,11 @@
-# Notiz im Unterordner
+# Note in a subfolder
 
-Bild mit relativem Pfad aus dem Unterordner:
+Image with a path relative to this note:
 
-![Diagramm|240](../assets/diagramm.svg)
+![Diagram|240](../assets/diagram.svg)
 
-Pfad relativ zum Workspace-Ordner (beginnt mit `/`):
+Path relative to the workspace folder (starts with `/`):
 
-![Diagramm](/assets/diagramm.svg)
+![Diagram](/assets/diagram.svg)
 
-Zurück zum [Showcase](../showcase.md).
+Back to the [showcase](../showcase.md).

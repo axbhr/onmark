@@ -1,78 +1,78 @@
 ---
-title: Obsidianate Showcase
+title: Onmark Showcase
 tags: [demo, markdown]
 aliases:
-  - Beispiele
+  - Examples
   - Showcase
-status: "in Arbeit"
+status: "work in progress"
 ---
 
-# Obsidianate Showcase
+# Onmark Showcase
 
-Diese Datei enthält ein Beispiel für jedes unterstützte Element.
-**Phase 3:** Blöcke – Codeblöcke, Bilder, Tabellen, Callouts und Frontmatter („Eigenschaften“ oben) werden gerendert. Steht der Cursor im Block, erscheint der Rohtext.
+This file contains an example of every supported element.
+Markdown syntax only appears where your cursor is: inline syntax when the cursor touches the element, block syntax on the cursor line, large blocks while the cursor is inside them.
 
-## Überschriften
+## Headings
 
-# H1 mit schließenden Rauten ##
+# H1 with closing hashes ##
 ## H2
 ### H3
 #### H4
 ##### H5
 ###### H6
 
-## Formatierung
+## Formatting
 
-Text mit **fett**, *kursiv*, ***fett und kursiv***, ~~durchgestrichen~~, ==hervorgehoben== und `Inline-Code`.
+Text with **bold**, *italic*, ***bold italic***, ~~strikethrough~~, ==highlight== and `inline code`.
 
-Auch _Unterstriche_ und __doppelte Unterstriche__ sowie **fett mit `Code` und *kursiv* darin**.
+Also _underscores_ and __double underscores__, and **bold with `code` and *italic* inside**.
 
-Shortcuts: Text markieren und `Strg+B` bzw. `Strg+I` drücken.
+Shortcuts: select text and press `Ctrl+B` or `Ctrl+I`.
 
 ## Links
 
-`Strg+Klick` öffnet einen Link, `Strg+Alt+Klick` öffnet ihn daneben.
+`Ctrl+Click` opens a link, `Ctrl+Alt+Click` opens it to the side.
 
-- Extern: [VS Code](https://code.visualstudio.com)
-- Relative Notiz (Live Preview): [CRLF-Datei](./crlf.md)
-- Andere Datei (Standard-Editor): [Paketdefinition](../package.json)
-- Fehlende Datei (Warnung): [gibt es nicht](./fehlt.md)
-- Autolink: <https://github.com> und nackte URL https://obsidian.md
+- External: [VS Code](https://code.visualstudio.com)
+- Relative note (opens in Onmark): [CRLF file](./crlf.md)
+- Other file (opens in the default editor): [package manifest](../package.json)
+- Missing file (shows a warning): [does not exist](./missing.md)
+- Autolink: <https://github.com> and a bare URL https://code.visualstudio.com
 
-## Zitate
+## Quotes
 
-> Ein Zitat mit **Formatierung**
-> über zwei Zeilen.
+> A quote with **formatting**
+> over two lines.
 >
-> > Verschachteltes Zitat.
+> > A nested quote.
 
-## Listen
+## Lists
 
-- Punkt eins
-- Punkt zwei mit einem sehr langen Text, der umbricht, damit man sieht, dass die Folgezeile sauber unter dem Text und nicht unter dem Aufzählungszeichen beginnt.
-  - eingerückt
-    - doppelt eingerückt
-* Stern
+- Item one
+- Item two with a very long text that wraps, so you can see that the continuation line starts under the text and not under the bullet.
+  - indented
+    - indented twice
+* Star
 + Plus
 
-1. Erstens
-2. Zweitens
-   1. Unterpunkt
+1. First
+2. Second
+   1. Sub item
 
-- [ ] offene Aufgabe (Checkbox anklicken)
-- [x] erledigte Aufgabe
-  - [ ] verschachtelte Aufgabe
-1. [ ] nummerierte Aufgabe
+- [ ] open task (click the checkbox)
+- [x] done task
+  - [ ] nested task
+1. [ ] numbered task
 
-## Horizontale Linie
+## Horizontal rule
 
 ---
 
 ***
 
-## Codeblöcke
+## Code blocks
 
-Syntax-Highlighting in den Farben des aktiven VS-Code-Themes, Sprachlabel und Kopier-Button:
+Syntax highlighting in the colors of the active VS Code theme, language label and copy button:
 
 ```ts
 interface Note {
@@ -81,50 +81,50 @@ interface Note {
 }
 
 export function slug(note: Note): string {
-	// Tab-Einrückung muss erhalten bleiben
+	// tab indentation must be preserved
 	return note.title.toLowerCase().replace(/\s+/g, '-');
 }
 ```
 
 ```python
 def fib(n: int) -> int:
-    """Rekursiv, nur zur Demo."""
+    """Recursive, just for the demo."""
     return n if n < 2 else fib(n - 1) + fib(n - 2)
 ```
 
 ```json
-{ "name": "obsidianate", "private": true, "version": 1 }
+{ "name": "onmark", "private": true, "version": 1 }
 ```
 
 ```
-Ohne Sprache: kein Highlighting.
+No language: no highlighting.
 ```
 
-## Bilder
+## Images
 
-Lokal (relativ), mit Breite `|240`:
+Local (relative), with width `|240`:
 
-![Diagramm|240](assets/diagramm.svg)
+![Diagram|240](assets/diagram.svg)
 
-Per https:
+Over https:
 
-![VS Code Logo|64](https://code.visualstudio.com/assets/favicon.ico)
+![VS Code logo|64](https://code.visualstudio.com/assets/favicon.ico)
 
-Fehlendes Bild: ![nicht da](assets/fehlt.png)
+Missing image: ![not there](assets/missing.png)
 
-Unterordner-Beispiel: [notizen/unterordner.md](notizen/unterordner.md)
+Subfolder example: [notes/subfolder.md](notes/subfolder.md)
 
-## Tabellen
+## Tables
 
-| Element | Darstellung | Ausrichtung |
-| :------ | :---------: | ----------: |
-| **fett** | `Code` | rechts |
-| [Link](https://obsidian.md) | ==markiert== | 42 |
-| leer → | | 3,14 |
+| Element | Rendering | Alignment |
+| :------ | :-------: | --------: |
+| **bold** | `code` | right |
+| [link](https://code.visualstudio.com) | ==highlight== | 42 |
+| empty → | | 3.14 |
 
-Ohne äußere Pipes:
+Without outer pipes:
 
-Name | Wert
+Name | Value
 --- | ---
 a | 1
 b | 2
@@ -132,38 +132,38 @@ b | 2
 ## Callouts
 
 > [!note]
-> Ein Hinweis ohne eigenen Titel.
+> A note without its own title.
 
-> [!tip] Tipp mit Titel
-> Inhalt mit **Formatierung** und einem [Link](https://code.visualstudio.com).
+> [!tip] Tip with a title
+> Content with **formatting** and a [link](https://code.visualstudio.com).
 
-> [!info]+ Einklappbar, standardmäßig offen
-> Pfeil anklicken zum Einklappen.
+> [!info]+ Foldable, open by default
+> Click the arrow to fold.
 
-> [!warning]- Eingeklappt
-> Dieser Text ist erst nach dem Aufklappen sichtbar.
+> [!warning]- Folded
+> This text only shows after unfolding.
 
-> [!abstract] Zusammenfassung
+> [!abstract] Summary
 > abstract, summary, tldr
 
 > [!todo] Todo
-> - [ ] Aufgabe im Callout
+> - [ ] a task inside a callout
 
-> [!success] Erfolg
+> [!success] Success
 
-> [!question] Frage?
+> [!question] Question?
 
-> [!failure] Fehlschlag
+> [!failure] Failure
 
-> [!danger] Gefahr
+> [!danger] Danger
 
 > [!bug] Bug
 
-> [!example] Beispiel
+> [!example] Example
 
-> [!quote] Zitat
-> — Jemand Berühmtes
+> [!quote] Quote
+> — Someone famous
 
 ## Unicode
 
-Umlaute äöü ß, Emoji 🎉 und 漢字 – Positionen müssen auch hier stimmen.
+Umlauts äöü ß, emoji 🎉 and 漢字. Positions must be correct here too.

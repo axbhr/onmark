@@ -51,10 +51,10 @@ export const imageHandlers: NodeHandlers = {
 
 export const imageTheme = EditorView.baseTheme({
   // inline-block: a block inside the line would add empty line boxes around CodeMirror's widget buffers.
-  '.cm-ob-image': { display: 'inline-block', maxWidth: '100%', verticalAlign: 'bottom' },
-  '.cm-ob-image-below': { display: 'block' },
-  '.cm-ob-image img': { maxWidth: '100%', height: 'auto', verticalAlign: 'bottom' },
-  '.cm-ob-image-broken': {
+  '.cm-om-image': { display: 'inline-block', maxWidth: '100%', verticalAlign: 'bottom' },
+  '.cm-om-image-below': { display: 'block' },
+  '.cm-om-image img': { maxWidth: '100%', height: 'auto', verticalAlign: 'bottom' },
+  '.cm-om-image-broken': {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '0.3em',

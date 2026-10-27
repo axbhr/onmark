@@ -1,15 +1,43 @@
 {
-  "name": "obsidianate",
-  "displayName": "Obsidianate",
-  "description": "Obsidian-artige Live Preview für Markdown in VS Code",
-  "version": "0.1.0",
+  "name": "onmark",
+  "displayName": "Onmark",
+  "description": "Markdown that renders as you write. Live preview editing for Markdown in VS Code, with syntax that appears only where your cursor is.",
+  "version": "0.0.0",
   "publisher": "axbhr",
-  "license": "MIT",
+  "author": "axbhr",
+  "license": "GPL-3.0-or-later",
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#F3EEE4",
+    "theme": "light"
+  },
+  "homepage": "https://github.com/axbhr/onmark#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/axbhr/onmark.git"
+  },
+  "bugs": {
+    "url": "https://github.com/axbhr/onmark/issues"
+  },
+  "qna": "https://github.com/axbhr/onmark/discussions",
   "engines": {
     "vscode": "^1.90.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "markdown",
+    "live preview",
+    "wysiwyg",
+    "editor",
+    "codemirror",
+    "obsidian",
+    "notes",
+    "writing",
+    "callouts",
+    "md"
   ],
   "main": "./dist/extension.js",
   "extensionKind": [
@@ -17,11 +45,17 @@
     "workspace"
   ],
   "activationEvents": [],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
   "contributes": {
     "customEditors": [
       {
-        "viewType": "obsidianate.editor",
-        "displayName": "Obsidianate Live Preview",
+        "viewType": "onmark.editor",
+        "displayName": "Onmark Live Preview",
         "selector": [
           {
             "filenamePattern": "*.md"
@@ -32,56 +66,69 @@
     ],
     "commands": [
       {
-        "command": "obsidianate.openSource",
-        "title": "Als Quelltext öffnen",
-        "category": "Obsidianate",
+        "command": "onmark.openSource",
+        "title": "Open as Source Text",
+        "category": "Onmark",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "obsidianate.openLivePreview",
-        "title": "In Live Preview öffnen",
-        "category": "Obsidianate",
-        "icon": "$(open-preview)"
+        "command": "onmark.openPreview",
+        "title": "Open in Live Preview",
+        "category": "Onmark",
+        "icon": {
+          "light": "media/editor-title-light.svg",
+          "dark": "media/editor-title-dark.svg"
+        }
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "obsidianate.openSource",
-          "when": "activeCustomEditorId == obsidianate.editor",
+          "command": "onmark.openSource",
+          "when": "activeCustomEditorId == onmark.editor",
           "group": "navigation"
         },
         {
-          "command": "obsidianate.openLivePreview",
-          "when": "resourceExtname == .md && activeEditor == workbench.editors.files.textFileEditor",
+          "command": "onmark.openPreview",
+          "when": "resourceLangId == markdown && activeEditor == workbench.editors.files.textFileEditor",
           "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "onmark.openSource",
+          "when": "activeCustomEditorId == onmark.editor"
+        },
+        {
+          "command": "onmark.openPreview",
+          "when": "resourceLangId == markdown"
         }
       ]
     },
     "configuration": {
-      "title": "Obsidianate",
+      "title": "Onmark",
       "properties": {
-        "obsidianate.fontFamily": {
+        "onmark.fontFamily": {
           "type": "string",
           "default": "",
-          "description": "Schriftart für Fließtext. Leer = Schrift der VS-Code-Oberfläche."
+          "markdownDescription": "Font family for body text. Empty uses the VS Code UI font."
         },
-        "obsidianate.fontSize": {
+        "onmark.fontSize": {
           "type": "number",
           "default": 16,
           "minimum": 8,
-          "description": "Schriftgröße für Fließtext in Pixeln."
+          "description": "Font size of body text in pixels."
         },
-        "obsidianate.readableLineLength": {
+        "onmark.readableLineLength": {
           "type": "boolean",
           "default": true,
-          "description": "Inhalt zentrieren und auf obsidianate.maxWidth begrenzen."
+          "markdownDescription": "Center the content and limit its width to `#onmark.maxWidth#`."
         },
-        "obsidianate.maxWidth": {
+        "onmark.maxWidth": {
           "type": "number",
           "default": 750,
           "minimum": 200,
-          "description": "Maximale Inhaltsbreite in Pixeln bei lesbarer Zeilenlänge."
+          "markdownDescription": "Maximum content width in pixels when `#onmark.readableLineLength#` is enabled."
         }
       }
     }
@@ -93,7 +140,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "sample:large": "node scripts/large-sample.mjs",
-    "vscode:prepublish": "npm run package"
+    "vsix": "vsce package --no-dependencies",
+    "vscode:prepublish": "npm run package",
+    "notices": "node scripts/notices.mjs"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.11.1",
@@ -109,8 +158,10 @@
     "@types/node": "^20.19.43",
     "@types/vscode": "~1.90.0",
     "@vscode/codicons": "^0.0.46-24",
+    "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.2",
     "jsonc-parser": "^3.3.1",
+    "ovsx": "^1.3.0",
     "typescript": "^7.0.2",
     "vitest": "^4.1.12"
   }

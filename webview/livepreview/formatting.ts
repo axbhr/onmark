@@ -19,7 +19,7 @@ export const formattingHandlers: NodeHandlers = {
     const open = node.firstChild;
     const close = node.lastChild;
     if (open?.name === 'CodeMark' && close?.name === 'CodeMark' && open !== close) {
-      ctx.mark(open.to, close.from, 'cm-ob-code');
+      ctx.mark(open.to, close.from, 'cm-om-code');
     }
     hideMarks(node, ctx);
   },
@@ -27,12 +27,12 @@ export const formattingHandlers: NodeHandlers = {
 
 export const formattingTheme = EditorView.baseTheme({
   // Same look as the `==highlight==` token style, for rendered widgets (tables).
-  '.cm-ob-highlight': {
+  '.cm-om-highlight': {
     color: 'inherit',
     backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)',
     borderRadius: '2px',
   },
-  '.cm-ob-code': {
+  '.cm-om-code': {
     backgroundColor: 'var(--vscode-textPreformat-background, var(--vscode-textCodeBlock-background))',
     outline: '1px solid var(--vscode-contrastBorder, transparent)',
     borderRadius: '3px',

@@ -17,29 +17,29 @@ export class PropertiesWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const box = document.createElement('div');
-    box.className = 'cm-ob-properties';
+    box.className = 'cm-om-properties';
 
     const head = document.createElement('div');
-    head.className = 'cm-ob-properties-head';
+    head.className = 'cm-om-properties-head';
     head.setAttribute('role', 'button');
     head.setAttribute('aria-expanded', String(!this.folded));
-    head.append(icon(this.folded ? 'chevron-right' : 'chevron-down'), 'Eigenschaften');
+    head.append(icon(this.folded ? 'chevron-right' : 'chevron-down'), 'Properties');
     box.append(head);
     if (this.folded) return box;
 
     for (const { key, value, line } of parseProperties(this.yaml)) {
       const row = document.createElement('div');
-      row.className = 'cm-ob-property';
+      row.className = 'cm-om-property';
       row.dataset.line = String(line);
       const k = document.createElement('span');
-      k.className = 'cm-ob-property-key';
+      k.className = 'cm-om-property-key';
       k.textContent = key;
       const v = document.createElement('span');
-      v.className = 'cm-ob-property-value';
+      v.className = 'cm-om-property-value';
       if (Array.isArray(value)) {
         for (const item of value) {
           const chip = document.createElement('span');
-          chip.className = 'cm-ob-chip';
+          chip.className = 'cm-om-chip';
           chip.textContent = item;
           v.append(chip);
         }

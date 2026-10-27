@@ -5,7 +5,7 @@ import type { DecorationContext, NodeHandlers } from './context';
 function heading(level: number) {
   return (node: SyntaxNode, ctx: DecorationContext) => {
     // Size applies even on the active line so the height never jumps while typing.
-    ctx.line(node.from, `cm-ob-h cm-ob-h${level}`);
+    ctx.line(node.from, `cm-om-h cm-om-h${level}`);
     if (ctx.lineActive(node.from)) return;
     const text = ctx.state.doc;
     for (let mark = node.firstChild; mark; mark = mark.nextSibling) {
@@ -25,11 +25,11 @@ export const headingHandlers: NodeHandlers = Object.fromEntries(
 );
 
 export const headingTheme = EditorView.baseTheme({
-  '.cm-ob-h': { fontWeight: 'bold', lineHeight: '1.3' },
-  '.cm-ob-h1': { fontSize: '2em', paddingTop: '0.4em' },
-  '.cm-ob-h2': { fontSize: '1.6em', paddingTop: '0.35em' },
-  '.cm-ob-h3': { fontSize: '1.37em', paddingTop: '0.3em' },
-  '.cm-ob-h4': { fontSize: '1.25em', paddingTop: '0.25em' },
-  '.cm-ob-h5': { fontSize: '1.12em' },
-  '.cm-ob-h6': { fontSize: '1em', color: 'var(--vscode-descriptionForeground)' },
+  '.cm-om-h': { fontWeight: 'bold', lineHeight: '1.3' },
+  '.cm-om-h1': { fontSize: '2em', paddingTop: '0.4em' },
+  '.cm-om-h2': { fontSize: '1.6em', paddingTop: '0.35em' },
+  '.cm-om-h3': { fontSize: '1.37em', paddingTop: '0.3em' },
+  '.cm-om-h4': { fontSize: '1.25em', paddingTop: '0.25em' },
+  '.cm-om-h5': { fontSize: '1.12em' },
+  '.cm-om-h6': { fontSize: '1em', color: 'var(--vscode-descriptionForeground)' },
 });

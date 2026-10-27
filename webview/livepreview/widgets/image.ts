@@ -30,12 +30,12 @@ export class ImageWidget extends WidgetType {
 
   toDOM(view: EditorView): HTMLElement {
     const wrap = document.createElement('span');
-    const cls = this.isBelow ? 'cm-ob-image cm-ob-image-below' : 'cm-ob-image';
+    const cls = this.isBelow ? 'cm-om-image cm-om-image-below' : 'cm-om-image';
     wrap.className = cls;
     const broken = () => {
       wrap.replaceChildren(icon('file-media'), ` ${this.alt || this.raw}`);
-      wrap.className = `${cls} cm-ob-image-broken`;
-      wrap.title = `Bild nicht gefunden: ${this.raw}`;
+      wrap.className = `${cls} cm-om-image-broken`;
+      wrap.title = `Image not found: ${this.raw}`;
     };
     if (!this.src || failed.has(this.src)) {
       broken();

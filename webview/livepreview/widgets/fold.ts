@@ -13,10 +13,10 @@ export class FoldWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const fold = document.createElement('span');
-    fold.className = 'cm-ob-fold';
+    fold.className = 'cm-om-fold';
     fold.setAttribute('role', 'button');
     fold.setAttribute('aria-expanded', String(!this.folded));
-    fold.title = this.folded ? 'Aufklappen' : 'Zuklappen';
+    fold.title = this.folded ? 'Expand' : 'Collapse';
     fold.append(icon(this.folded ? 'chevron-right' : 'chevron-down'));
     return fold;
   }

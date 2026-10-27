@@ -7,7 +7,7 @@ export class RuleWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const hr = document.createElement('span');
-    hr.className = 'cm-ob-hr';
+    hr.className = 'cm-om-hr';
     hr.setAttribute('role', 'separator');
     return hr;
   }

@@ -15,9 +15,10 @@ export class CheckboxWidget extends WidgetType {
 
   toDOM(): HTMLElement {
     const box = document.createElement('span');
-    box.className = 'cm-ob-checkbox';
+    box.className = 'cm-om-checkbox';
     box.setAttribute('role', 'checkbox');
     box.setAttribute('aria-checked', String(this.checked));
+    box.setAttribute('aria-label', 'Task');
     return box;
   }
 
