@@ -1,3 +1,4 @@
+import { writeFile } from 'node:fs/promises';
 import * as esbuild from 'esbuild';
 
 const watch = process.argv.includes('--watch');
@@ -37,5 +38,8 @@ const configs = [
 if (watch) {
   for (const config of configs) await (await esbuild.context(config)).watch();
 } else {
-  await Promise.all(configs.map((config) => esbuild.build(config)));
+  const results = await Promise.all(configs.map((config) => esbuild.build({ ...config, metafile: true })));
+  // Input list of the bundles; scripts/notices.mjs derives the third-party notices from it.
+  const inputs = results.flatMap((r) => Object.keys(r.metafile.inputs));
+  await writeFile('dist/inputs.json', JSON.stringify([...new Set(inputs)].sort(), null, 1));
 }
