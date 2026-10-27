@@ -62,6 +62,15 @@ Ausgeblendete Syntax ist atomar: Der Cursor landet nie in unsichtbaren Zeichen.
 - **Veraltete Edits:** Jeder `edit` trägt die Version des letzten `init`/`externalUpdate`. Hat der Host seitdem ein neueres Update gesendet, verwirft er den Edit. Das Update überschreibt das Webview ohnehin, damit laufen beide Seiten wieder zusammen.
 - **`externalUpdate`** wird im Webview als minimaler Diff (gemeinsames Präfix/Suffix) und ohne History-Eintrag angewendet. Cursor und Scrollposition bleiben erhalten.
 
+### Theme
+
+Obsidianate folgt immer dem aktiven VS-Code-Theme, auch beim Wechsel im laufenden Betrieb:
+
+- **Oberfläche und gerendertes Markdown** nutzen nur Workbench-Farbvariablen (`--vscode-*`): Hintergrund, Text, Links, Auswahl, Cursor, Suche, Zitate, Trennlinien, Inline-Code und High-Contrast-Rahmen. Das gerenderte Markdown sieht damit aus wie die eingebaute Markdown-Vorschau.
+- **Syntax-Farben in Code** (Token-Farben) bekommt ein Webview von VS Code nicht. Der Host (`src/theme/`) liest deshalb die Theme-Datei der Extension, die das aktive Theme liefert. Er folgt dabei `include`, wendet `editor.tokenColorCustomizations` an und schickt die aufgelösten Farben als `tokenTheme` ans Webview. Die Nachricht kommt bei jedem Theme-Wechsel, bei Änderungen an `editor.tokenColorCustomizations` und wenn Extensions installiert oder entfernt werden.
+- **Remote (WSL, SSH, Container):** Theme-Extensions laufen auf der UI-Seite und sind für einen Remote-Extension-Host unsichtbar. Deshalb steht in `package.json` `extensionKind: ["ui", "workspace"]`: Die installierte Extension läuft lokal und sieht alle Themes, Workspace-Dateien erreicht sie über die VS-Code-API. Ist die Theme-Datei trotzdem nicht lesbar, greift ein Fallback auf Theme-Variablen (`symbolIcon-*`, `debugTokenExpression-*`).
+- **F5 aus einem WSL-Fenster:** Die Entwicklungs-Extension läuft im Remote-Host und nutzt daher den Fallback. Die exakten Token-Farben siehst du beim Debuggen aus einem lokalen Fenster oder mit der installierten `.vsix`.
+
 ### Tastenkürzel im Webview
 
 VS Code leitet jeden Tastendruck, der im Webview bis zum `window` durchkommt, an seine eigenen Keybindings weiter. Damit nichts doppelt ausgelöst wird, gilt:
@@ -88,7 +97,10 @@ Display-Name, Extension-ID und alle Command-, View- und Setting-IDs stehen aussc
 
 Zusätzlich zu den vorgegebenen CodeMirror-Paketen kommen zwei transitive Abhängigkeiten von `@codemirror/language` dazu. Sie werden direkt importiert und stehen deshalb explizit in `package.json`:
 - `@lezer/highlight` liefert die `tags` für Highlight-Styles und die `==Highlight==`-Extension.
-- `@lezer/common` liefert den Typ `SyntaxNode` für die Decoration-Handler. Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
+- `@lezer/common` liefert den Typ `SyntaxNode` für die Decoration-Handler.
+
+Neu im Host:
+- `jsonc-parser` (Microsoft) liest Theme-Dateien. Die sind JSONC, also mit Kommentaren und Trailing Commas, und `JSON.parse` scheitert daran. Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
 
 ### Code-Struktur der Live Preview
 

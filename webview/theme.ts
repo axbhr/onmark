@@ -28,9 +28,16 @@ export const editorTheme = EditorView.theme({
   '.cm-selectionBackground': { backgroundColor: 'var(--vscode-editor-inactiveSelectionBackground)' },
   '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
     backgroundColor: 'var(--vscode-editor-selectionBackground)',
+    outline: '1px solid var(--vscode-editor-selectionHighlightBorder, transparent)',
   },
-  '.cm-searchMatch': { backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)' },
-  '.cm-searchMatch.cm-searchMatch-selected': { backgroundColor: 'var(--vscode-editor-findMatchBackground)' },
+  '.cm-searchMatch': {
+    backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)',
+    outline: '1px dotted var(--vscode-contrastActiveBorder, transparent)',
+  },
+  '.cm-searchMatch.cm-searchMatch-selected': {
+    backgroundColor: 'var(--vscode-editor-findMatchBackground)',
+    outline: '1px solid var(--vscode-contrastActiveBorder, transparent)',
+  },
   '.cm-panels': {
     backgroundColor: 'var(--vscode-editorWidget-background)',
     color: 'var(--vscode-editorWidget-foreground)',
@@ -43,12 +50,15 @@ export const editorTheme = EditorView.theme({
     color: 'var(--vscode-input-foreground)',
     border: '1px solid var(--vscode-input-border, transparent)',
   },
+  '.cm-textfield:focus': { outline: '1px solid var(--vscode-focusBorder)', outlineOffset: '-1px' },
   '.cm-button': {
     backgroundImage: 'none',
     backgroundColor: 'var(--vscode-button-secondaryBackground)',
     color: 'var(--vscode-button-secondaryForeground)',
-    border: 'none',
+    border: '1px solid var(--vscode-button-border, transparent)',
   },
+  '.cm-button:hover': { backgroundColor: 'var(--vscode-button-secondaryHoverBackground)' },
+  '.cm-panel.cm-search [name=close]': { color: 'var(--vscode-icon-foreground)' },
   '.cm-panel.cm-search label': { color: 'var(--vscode-editorWidget-foreground)' },
 });
 

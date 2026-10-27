@@ -12,6 +12,10 @@
     "Other"
   ],
   "main": "./dist/extension.js",
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
   "activationEvents": [],
   "contributes": {
     "customEditors": [
@@ -104,6 +108,7 @@
     "@types/node": "^20.19.43",
     "@types/vscode": "~1.90.0",
     "esbuild": "^0.28.2",
+    "jsonc-parser": "^3.3.1",
     "typescript": "^7.0.2",
     "vitest": "^4.1.12"
   }

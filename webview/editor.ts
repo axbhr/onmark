@@ -5,8 +5,10 @@ import { search, searchKeymap } from '@codemirror/search';
 import { Annotation, EditorSelection, EditorState, Transaction, type Text } from '@codemirror/state';
 import { EditorView, drawSelection, keymap } from '@codemirror/view';
 import { minimalDiff, type Change, type Pos } from '../src/shared/text';
+import type { TokenTheme } from '../src/shared/tokens';
 import { Highlight, livePreview } from './livepreview';
 import type { OpenLink } from './livepreview/links';
+import { followThemeKind, setTokenTheme, vscodeTheme } from './syntaxTheme';
 import { editorTheme, markdownHighlight } from './theme';
 
 /** Marks transactions that came from the host so they are not echoed back. */
@@ -21,6 +23,7 @@ export interface ViewState {
 export interface EditorOptions {
   parent: HTMLElement;
   text: string;
+  tokens: TokenTheme;
   nonce: string;
   restore?: ViewState;
   onEdit(changes: Change[]): void;
@@ -30,6 +33,7 @@ export interface EditorOptions {
 
 export interface Editor {
   applyRemote(text: string): void;
+  setTokenTheme(tokens: TokenTheme): void;
 }
 
 const toPos = (doc: Text, offset: number): Pos => {
@@ -67,6 +71,7 @@ export function createEditor(options: EditorOptions): Editor {
         markdown({ base: markdownLanguage, extensions: [Highlight] }),
         livePreview({ openLink: options.onOpenLink }),
         syntaxHighlighting(markdownHighlight),
+        vscodeTheme(options.tokens),
         editorTheme,
         EditorView.lineWrapping,
         EditorView.cspNonce.of(options.nonce),
@@ -96,6 +101,7 @@ export function createEditor(options: EditorOptions): Editor {
   view.scrollDOM.addEventListener('scroll', saveViewState, { passive: true });
 
   if (restore) requestAnimationFrame(() => (view.scrollDOM.scrollTop = restore.scrollTop));
+  followThemeKind(view);
   view.focus();
 
   return {
@@ -107,5 +113,6 @@ export function createEditor(options: EditorOptions): Editor {
         annotations: [remoteUpdate.of(true), Transaction.addToHistory.of(false)],
       });
     },
+    setTokenTheme: (tokens) => setTokenTheme(view, tokens),
   };
 }

@@ -30,11 +30,13 @@ window.addEventListener('message', (event: MessageEvent<HostMessage>) => {
       applySettings(message.settings);
       if (editor) {
         editor.applyRemote(message.text);
+        editor.setTokenTheme(message.tokens);
         break;
       }
       editor = createEditor({
         parent: document.getElementById('editor')!,
         text: message.text,
+        tokens: message.tokens,
         nonce,
         restore: vscode.getState(),
         onEdit: (changes) => vscode.postMessage({ type: 'edit', baseVersion: version, changes }),
@@ -46,6 +48,9 @@ window.addEventListener('message', (event: MessageEvent<HostMessage>) => {
     case 'externalUpdate':
       version = message.version;
       editor?.applyRemote(message.text);
+      break;
+    case 'tokenTheme':
+      editor?.setTokenTheme(message.tokens);
       break;
   }
 });

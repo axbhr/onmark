@@ -27,7 +27,8 @@ export const formattingHandlers: NodeHandlers = {
 
 export const formattingTheme = EditorView.baseTheme({
   '.cm-ob-code': {
-    backgroundColor: 'var(--vscode-textCodeBlock-background)',
+    backgroundColor: 'var(--vscode-textPreformat-background, var(--vscode-textCodeBlock-background))',
+    outline: '1px solid var(--vscode-contrastBorder, transparent)',
     borderRadius: '3px',
     padding: '0.1em 0.25em',
     fontSize: '0.9em',
