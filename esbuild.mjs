@@ -20,6 +20,8 @@ const configs = [
     format: 'cjs',
     target: 'node20',
     external: ['vscode'],
+    // jsonc-parser's UMD build (the "main" field) keeps runtime requires that esbuild cannot bundle.
+    mainFields: ['module', 'main'],
   },
   {
     // Also emits dist/webview.css from the CSS imported in main.ts.
