@@ -9,6 +9,15 @@ export type LinkTarget =
 // Trust boundary: link targets come from file content. Never hand e.g. `command:` URIs to the opener.
 const EXTERNAL_SCHEMES = new Set(['http', 'https', 'mailto']);
 
+/**
+ * Makes file-derived text safe to show in a notification. VS Code renders `[label](target)` in
+ * notifications as clickable links, including `command:` URIs, so link syntax must never survive.
+ */
+export function plainText(text: string, max = 120): string {
+  const flat = text.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/[[\]()<>`]/g, '');
+  return flat.length > max ? `${flat.slice(0, max)}…` : flat;
+}
+
 /** Classifies a raw Markdown link target. Returns undefined for anything we must not or cannot open. */
 export function parseLinkTarget(raw: string): LinkTarget | undefined {
   const target = raw.trim().replace(/^<(.*)>$/, '$1');
@@ -36,7 +45,7 @@ export function parseLinkTarget(raw: string): LinkTarget | undefined {
 export async function openLink(raw: string, toSide: boolean, document: vscode.TextDocument): Promise<void> {
   const target = parseLinkTarget(raw);
   if (!target) {
-    void vscode.window.showWarningMessage(`Cannot open link: ${raw}`);
+    void vscode.window.showWarningMessage(`Cannot open link: ${plainText(raw)}`);
     return;
   }
   if (target.kind === 'external') {
@@ -50,7 +59,7 @@ export async function openLink(raw: string, toSide: boolean, document: vscode.Te
   try {
     await vscode.workspace.fs.stat(uri);
   } catch {
-    void vscode.window.showWarningMessage(`File not found: ${vscode.workspace.asRelativePath(uri)}`);
+    void vscode.window.showWarningMessage(`File not found: ${plainText(vscode.workspace.asRelativePath(uri))}`);
     return;
   }
   const column = toSide ? vscode.ViewColumn.Beside : vscode.ViewColumn.Active;
