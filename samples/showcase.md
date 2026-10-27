@@ -1,12 +1,16 @@
 ---
 title: Obsidianate Showcase
-tags: [demo]
+tags: [demo, markdown]
+aliases:
+  - Beispiele
+  - Showcase
+status: "in Arbeit"
 ---
 
 # Obsidianate Showcase
 
 Diese Datei enthält ein Beispiel für jedes unterstützte Element.
-**Phase 2:** Inline Live Preview – Syntax erscheint nur, wenn der Cursor im Element bzw. auf der Zeile steht.
+**Phase 3:** Blöcke – Codeblöcke, Bilder, Tabellen, Callouts und Frontmatter („Eigenschaften“ oben) werden gerendert. Steht der Cursor im Block, erscheint der Rohtext.
 
 ## Überschriften
 
@@ -66,19 +70,99 @@ Shortcuts: Text markieren und `Strg+B` bzw. `Strg+I` drücken.
 
 ***
 
-## Codeblock
+## Codeblöcke
+
+Syntax-Highlighting in den Farben des aktiven VS-Code-Themes, Sprachlabel und Kopier-Button:
 
 ```ts
-const answer = 42;
+interface Note {
+  title: string;
+  tags?: string[];
+}
+
+export function slug(note: Note): string {
 	// Tab-Einrückung muss erhalten bleiben
+	return note.title.toLowerCase().replace(/\s+/g, '-');
+}
 ```
 
-## Tabelle
+```python
+def fib(n: int) -> int:
+    """Rekursiv, nur zur Demo."""
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+```
 
-| Spalte A | Spalte B |
-| -------- | -------: |
-| eins     |        1 |
-| zwei     |        2 |
+```json
+{ "name": "obsidianate", "private": true, "version": 1 }
+```
+
+```
+Ohne Sprache: kein Highlighting.
+```
+
+## Bilder
+
+Lokal (relativ), mit Breite `|240`:
+
+![Diagramm|240](assets/diagramm.svg)
+
+Per https:
+
+![VS Code Logo|64](https://code.visualstudio.com/assets/favicon.ico)
+
+Fehlendes Bild: ![nicht da](assets/fehlt.png)
+
+Unterordner-Beispiel: [notizen/unterordner.md](notizen/unterordner.md)
+
+## Tabellen
+
+| Element | Darstellung | Ausrichtung |
+| :------ | :---------: | ----------: |
+| **fett** | `Code` | rechts |
+| [Link](https://obsidian.md) | ==markiert== | 42 |
+| leer → | | 3,14 |
+
+Ohne äußere Pipes:
+
+Name | Wert
+--- | ---
+a | 1
+b | 2
+
+## Callouts
+
+> [!note]
+> Ein Hinweis ohne eigenen Titel.
+
+> [!tip] Tipp mit Titel
+> Inhalt mit **Formatierung** und einem [Link](https://code.visualstudio.com).
+
+> [!info]+ Einklappbar, standardmäßig offen
+> Pfeil anklicken zum Einklappen.
+
+> [!warning]- Eingeklappt
+> Dieser Text ist erst nach dem Aufklappen sichtbar.
+
+> [!abstract] Zusammenfassung
+> abstract, summary, tldr
+
+> [!todo] Todo
+> - [ ] Aufgabe im Callout
+
+> [!success] Erfolg
+
+> [!question] Frage?
+
+> [!failure] Fehlschlag
+
+> [!danger] Gefahr
+
+> [!bug] Bug
+
+> [!example] Beispiel
+
+> [!quote] Zitat
+> — Jemand Berühmtes
 
 ## Unicode
 
