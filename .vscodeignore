@@ -1,0 +1,11 @@
+# Allowlist: ship only the bundles, icons and the documents the Marketplace shows.
+**
+!dist/**
+dist/**/*.map
+dist/inputs.json
+!media/**
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE
+!THIRD_PARTY_NOTICES.md

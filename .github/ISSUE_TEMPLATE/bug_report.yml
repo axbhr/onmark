@@ -1,0 +1,45 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a bug! Please search existing issues first.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: markdown
+    attributes:
+      label: Markdown to reproduce
+      description: The smallest Markdown snippet that shows the problem.
+      render: markdown
+  - type: input
+    id: onmark
+    attributes:
+      label: Onmark version
+      placeholder: e.g. 0.2.0 (Extensions view → Onmark)
+    validations:
+      required: true
+  - type: dropdown
+    id: editor
+    attributes:
+      label: Editor
+      options: [VS Code, VS Code Insiders, VSCodium, Other]
+    validations:
+      required: true
+  - type: input
+    id: editor-version
+    attributes:
+      label: Editor version and OS
+      placeholder: e.g. VS Code 1.105, Windows 11 (with WSL)
+  - type: input
+    id: theme
+    attributes:
+      label: Color theme
+      description: Helpful for rendering issues.
+      placeholder: e.g. Dark Modern
