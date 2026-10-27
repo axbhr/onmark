@@ -2,7 +2,7 @@
 
 Obsidian-artige Live Preview für Markdown in VS Code. `.md`-Dateien öffnen sich in einem Editor, in dem Schreiben und Rendern auf derselben Fläche passieren. Die Datei auf der Platte bleibt reines Markdown.
 
-> **Stand: Phase 1** – Grundgerüst und bidirektionaler Sync. Der Editor zeigt Markdown mit Syntax-Highlighting, die Live Preview folgt in Phase 2.
+> **Stand: Phase 2** – Inline Live Preview: Überschriften, Formatierung, Links, Zitate, Listen, Aufgaben und Linien werden direkt im Editor gerendert. Blöcke (Code, Tabellen, Bilder, Callouts, Frontmatter) folgen in Phase 3.
 
 ## Entwicklung
 
@@ -12,6 +12,7 @@ npm run build      # dist/extension.js, dist/webview.js, dist/webview.css
 npm run watch      # Rebuild bei Änderungen
 npm run typecheck
 npm test
+npm run sample:large   # erzeugt samples/large.md (5.000+ Zeilen) für Performance-Tests
 ```
 
 **Debuggen:** `F5` („Run Extension“) baut und startet einen Extension Development Host mit dem Ordner `samples/`.
@@ -21,6 +22,25 @@ npm test
 - `.md`-Dateien öffnen sich standardmäßig in Obsidianate.
 - Zum Rohtext wechseln: Button in der Titelleiste, Command **„Obsidianate: Als Quelltext öffnen“** oder „Reopen With… → Text Editor“.
 - Zurück: Button in der Titelleiste des Text-Editors oder **„Obsidianate: In Live Preview öffnen“**.
+
+### Live Preview
+
+| Element | Darstellung | Syntax sichtbar, wenn … |
+| --- | --- | --- |
+| Überschriften `#`–`######` | Schriftgröße je Ebene | Cursor auf der Zeile |
+| `**fett**`, `*kursiv*`, `~~durch~~`, `==markiert==`, `` `Code` `` | formatiert | Cursor/Selektion berührt das Element |
+| `[Text](ziel)`, `<https://…>`, nackte URLs | Link | Cursor/Selektion berührt den Link |
+| `>` Zitat | linker Balken | Cursor auf der Zeile |
+| `-` / `*` / `+` Liste | „•“, hängende Einrückung | Cursor auf der Zeile |
+| `- [ ]` / `- [x]` Aufgabe | klickbare Checkbox (ändert den Quelltext) | Cursor auf der Zeile |
+| `---` Linie | Trennlinie | Cursor auf der Zeile |
+
+Ausgeblendete Syntax ist atomar: Der Cursor landet nie in unsichtbaren Zeichen.
+
+**Links öffnen:** `Strg+Klick` (macOS `Cmd+Klick`) öffnet einen Link, mit zusätzlich `Alt` öffnet er sich daneben.
+- `http`, `https` und `mailto` öffnen sich extern. Andere Schemes wie `command:` werden aus Sicherheitsgründen ignoriert.
+- Relative `.md`-Dateien öffnen sich in Obsidianate, andere Dateien im Standard-Editor.
+- Pfade mit `/` am Anfang gelten relativ zum Workspace-Ordner.
 
 ### Einstellungen
 
@@ -46,7 +66,17 @@ npm test
 
 VS Code leitet jeden Tastendruck, der im Webview bis zum `window` durchkommt, an seine eigenen Keybindings weiter. Damit nichts doppelt ausgelöst wird, gilt:
 
-- Tasten, die CodeMirror selbst verarbeitet (z. B. `Strg+F` Suche, `Strg+D`, Pfeiltasten), werden nicht an VS Code weitergereicht.
+- Tasten, die CodeMirror selbst verarbeitet, werden nicht an VS Code weitergereicht. Daraus ergeben sich diese bewussten Abweichungen von den VS-Code-Keybindings, solange der Live-Preview-Editor den Fokus hat:
+
+| Taste | In Obsidianate | In VS Code sonst |
+| --- | --- | --- |
+| `Strg+B` | fett ein/aus | Seitenleiste ein-/ausblenden |
+| `Strg+I` | kursiv ein/aus | Inline Chat / Vorschläge auslösen |
+| `Strg+F` | Suche von CodeMirror | Suchen-Widget |
+| `Strg+D` | nächstes Vorkommen auswählen | gleich |
+| `Strg+Shift+K` | Zeile löschen | gleich |
+| `Alt+↑/↓` | Zeile verschieben | gleich |
+
 - `Strg+Z` / `Strg+Y` / `Strg+Shift+Z` gehen immer nur an die Undo-History von CodeMirror. Undo in einem parallel geöffneten Text-Editor arbeitet auf dem Dokument und kommt per `externalUpdate` an.
 - Alles andere (`Strg+S`, `Strg+P`, `Strg+Shift+P`, …) behandelt VS Code wie gewohnt.
 
@@ -56,7 +86,26 @@ Display-Name, Extension-ID und alle Command-, View- und Setting-IDs stehen aussc
 
 ### Abhängigkeiten
 
-Neben den vorgegebenen CodeMirror-Paketen wird `@lezer/highlight` genutzt, weil es die `tags` für die Highlight-Styles bereitstellt (transitive Abhängigkeit von `@codemirror/language`, wird aber direkt importiert). Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
+Zusätzlich zu den vorgegebenen CodeMirror-Paketen kommen zwei transitive Abhängigkeiten von `@codemirror/language` dazu. Sie werden direkt importiert und stehen deshalb explizit in `package.json`:
+- `@lezer/highlight` liefert die `tags` für Highlight-Styles und die `==Highlight==`-Extension.
+- `@lezer/common` liefert den Typ `SyntaxNode` für die Decoration-Handler. Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
+
+### Code-Struktur der Live Preview
+
+- `webview/livepreview/inline.ts` enthält das ViewPlugin. Es läuft über den Lezer-Baum der sichtbaren Bereiche und ruft pro Knotentyp einen Handler auf, außerdem liefert es die atomaren Bereiche.
+- Pro Decoration-Gruppe gibt es eine Datei mit Handlern und Styles: `headings.ts`, `formatting.ts`, `links.ts`, `quotes.ts`, `lists.ts`, `rules.ts`.
+- `widgets/` enthält ein Widget pro Datei, `extensions/highlight.ts` die Lezer-Extension für `==…==`.
+- `commands.ts` enthält `Strg+B`/`Strg+I`.
+
+## Testen von Phase 2
+
+1. `F5` → `samples/showcase.md`: Außerhalb des Cursors sieht alles wie gerendertes Markdown aus.
+2. Cursor in `**fett**` setzen → `**` erscheint, Cursor raus → verschwindet. Auf eine Überschriftenzeile wechseln → `## ` erscheint.
+3. Mit den Pfeiltasten durch Listen und Links laufen: Der Cursor landet nie in unsichtbaren Zeichen.
+4. Checkbox anklicken → `[ ]` ↔ `[x]` im Quelltext, im parallel geöffneten Text-Editor sichtbar.
+5. `Strg+Klick` auf die Links im Abschnitt „Links“ (extern, `.md`, andere Datei, fehlende Datei).
+6. Wort markieren, `Strg+B` / `Strg+I`.
+7. `npm run sample:large`, dann `samples/large.md` öffnen → Tippen und Scrollen bleiben flüssig.
 
 ## Testen von Phase 1
 
