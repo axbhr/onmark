@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('vscode', () => ({}));
 
-import { parseLinkTarget } from '../src/editor/links';
+import { parseLinkTarget, plainText } from '../src/editor/links';
 
 describe('parseLinkTarget', () => {
   it('allows only safe external schemes', () => {
@@ -29,5 +29,20 @@ describe('parseLinkTarget', () => {
     expect(parseLinkTarget('C:\\notes\\a.md')).toMatchObject({ kind: 'file', path: 'C:/notes/a.md' });
     expect(parseLinkTarget('#heading')).toBeUndefined();
     expect(parseLinkTarget('  ')).toBeUndefined();
+  });
+});
+
+describe('plainText', () => {
+  it('removes link syntax so notifications cannot contain clickable command links', () => {
+    const payload = 'xx:[Retry in Onmark](command:workbench.action.terminal.sendSequence?%7B%7D)';
+    const safe = plainText(payload);
+    expect(safe).not.toMatch(/\[[^\]]*\]\([^)]*\)/);
+    expect(safe).not.toContain('](');
+    expect(plainText('<https://x>')).toBe('https://x');
+  });
+
+  it('flattens control characters and truncates long text', () => {
+    expect(plainText('a\nb\tc')).toBe('a b c');
+    expect(plainText('x'.repeat(200))).toHaveLength(121);
   });
 });
