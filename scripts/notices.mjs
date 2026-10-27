@@ -17,7 +17,7 @@ const sections = [...packages].sort().map((name) => {
   const pkg = JSON.parse(readFileSync(`${dir}/package.json`, 'utf8'));
   const file = licenseFile(dir);
   if (!file) throw new Error(`No license file found for ${name}`);
-  const text = readFileSync(file, 'utf8').trim();
+  const text = readFileSync(file, 'utf8').replace(/\r\n?/g, '\n').trim();
   return `## ${name} ${pkg.version}\n\nLicense: ${pkg.license}\n\n\`\`\`\n${text}\n\`\`\`\n`;
 });
 
