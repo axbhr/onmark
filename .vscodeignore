@@ -1,9 +1,12 @@
 # Allowlist: ship only the bundles, icons and the documents the Marketplace shows.
+# vsce applies `!` patterns regardless of order, so every allowed file is listed precisely.
 **
-!dist/**
-dist/**/*.map
-dist/inputs.json
-!media/**
+!dist/extension.js
+!dist/webview.js
+!dist/webview.css
+!dist/codicon.ttf
+!media/icon.png
+!media/editor-title-*.svg
 !package.json
 !README.md
 !CHANGELOG.md
