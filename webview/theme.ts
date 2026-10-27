@@ -1,6 +1,7 @@
 import { HighlightStyle } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 import { tags as t } from '@lezer/highlight';
+import { highlightTag } from './livepreview';
 
 const muted = 'var(--vscode-descriptionForeground)';
 const link = 'var(--vscode-textLink-foreground)';
@@ -51,7 +52,7 @@ export const editorTheme = EditorView.theme({
   '.cm-panel.cm-search label': { color: 'var(--vscode-editorWidget-foreground)' },
 });
 
-/** Plain Markdown highlighting (phase 1); live preview decorations come later. */
+/** Token styles; hiding syntax and widgets live in ./livepreview. */
 export const markdownHighlight = HighlightStyle.define([
   { tag: t.heading, fontWeight: 'bold' },
   { tag: t.strong, fontWeight: 'bold' },
@@ -63,6 +64,7 @@ export const markdownHighlight = HighlightStyle.define([
     fontFamily: 'var(--vscode-editor-font-family)',
     color: 'var(--vscode-textPreformat-foreground)',
   },
+  { tag: highlightTag, backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)', borderRadius: '2px' },
   { tag: t.quote, color: muted },
   { tag: [t.processingInstruction, t.meta, t.contentSeparator, t.labelName], color: muted },
 ]);

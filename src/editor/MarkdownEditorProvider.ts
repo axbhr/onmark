@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 import * as vscode from 'vscode';
 import { EXTENSION_ID } from '../shared/meta';
 import type { HostMessage, Settings, WebviewMessage } from '../shared/protocol';
+import { openLink } from './links';
 import { DocumentSync } from './sync';
 
 export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
@@ -37,6 +38,9 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             break;
           case 'edit':
             sync.receiveEdit(message);
+            break;
+          case 'openLink':
+            void openLink(message.target, message.modifier === 'side', document);
             break;
         }
       }),

@@ -5,6 +5,8 @@ import { search, searchKeymap } from '@codemirror/search';
 import { Annotation, EditorSelection, EditorState, Transaction, type Text } from '@codemirror/state';
 import { EditorView, drawSelection, keymap } from '@codemirror/view';
 import { minimalDiff, type Change, type Pos } from '../src/shared/text';
+import { Highlight, livePreview } from './livepreview';
+import type { OpenLink } from './livepreview/links';
 import { editorTheme, markdownHighlight } from './theme';
 
 /** Marks transactions that came from the host so they are not echoed back. */
@@ -22,6 +24,7 @@ export interface EditorOptions {
   nonce: string;
   restore?: ViewState;
   onEdit(changes: Change[]): void;
+  onOpenLink: OpenLink;
   onViewState(state: ViewState): void;
 }
 
@@ -61,7 +64,8 @@ export function createEditor(options: EditorOptions): Editor {
         drawSelection(),
         search({ top: true }),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
-        markdown({ base: markdownLanguage }),
+        markdown({ base: markdownLanguage, extensions: [Highlight] }),
+        livePreview({ openLink: options.onOpenLink }),
         syntaxHighlighting(markdownHighlight),
         editorTheme,
         EditorView.lineWrapping,
