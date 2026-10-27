@@ -38,6 +38,8 @@ window.addEventListener('message', (event: MessageEvent<HostMessage>) => {
         nonce,
         restore: vscode.getState(),
         onEdit: (changes) => vscode.postMessage({ type: 'edit', baseVersion: version, changes }),
+        onOpenLink: (target, toSide) =>
+          vscode.postMessage({ type: 'openLink', target, modifier: toSide ? 'side' : 'none' }),
         onViewState: (state) => vscode.setState(state),
       });
       break;
