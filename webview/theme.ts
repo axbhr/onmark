@@ -75,6 +75,5 @@ export const markdownHighlight = HighlightStyle.define([
     color: 'var(--vscode-textPreformat-foreground)',
   },
   { tag: highlightTag, backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)', borderRadius: '2px' },
-  { tag: t.quote, color: muted },
   { tag: [t.processingInstruction, t.meta, t.contentSeparator, t.labelName], color: muted },
 ]);

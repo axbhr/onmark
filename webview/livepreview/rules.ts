@@ -1,5 +1,5 @@
 import { EditorView } from '@codemirror/view';
-import type { NodeHandlers } from './inline';
+import type { NodeHandlers } from './context';
 import { RuleWidget } from './widgets/rule';
 
 const rule = new RuleWidget();

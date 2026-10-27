@@ -28,6 +28,9 @@ const configs = [
     platform: 'browser',
     format: 'iife',
     target: 'chrome120',
+    // Codicon font referenced from codicon.css; CSP allows fonts from the webview's own origin.
+    loader: { '.ttf': 'file' },
+    assetNames: '[name]',
   },
 ];
 

@@ -2,7 +2,11 @@
 
 Obsidian-artige Live Preview für Markdown in VS Code. `.md`-Dateien öffnen sich in einem Editor, in dem Schreiben und Rendern auf derselben Fläche passieren. Die Datei auf der Platte bleibt reines Markdown.
 
-> **Stand: Phase 2** – Inline Live Preview: Überschriften, Formatierung, Links, Zitate, Listen, Aufgaben und Linien werden direkt im Editor gerendert. Blöcke (Code, Tabellen, Bilder, Callouts, Frontmatter) folgen in Phase 3.
+> **Stand: Phase 3.** Inline-Elemente und Blöcke werden direkt im Editor gerendert:
+> - Inline: Überschriften, Formatierung, Links, Zitate, Listen, Aufgaben, Linien
+> - Blöcke: Codeblöcke, Bilder, Tabellen, Callouts, Frontmatter
+>
+> Die Vault-Funktionen (Wikilinks, Backlinks, Graph) folgen in Phase 4.
 
 ## Entwicklung
 
@@ -34,8 +38,35 @@ npm run sample:large   # erzeugt samples/large.md (5.000+ Zeilen) für Performan
 | `-` / `*` / `+` Liste | „•“, hängende Einrückung | Cursor auf der Zeile |
 | `- [ ]` / `- [x]` Aufgabe | klickbare Checkbox (ändert den Quelltext) | Cursor auf der Zeile |
 | `---` Linie | Trennlinie | Cursor auf der Zeile |
+| `![alt\|300](pfad)` Bild | Bild, max. Textbreite, optional mit Breite (`\|300` oder `\|300x200`) | Cursor/Selektion berührt das Bild; das Bild bleibt dann unter dem Rohtext sichtbar |
+| ```` ```lang ```` Codeblock | Hintergrund, Syntax-Highlighting in Theme-Farben, Sprachlabel, Kopier-Button | Cursor im Block (Fences erscheinen, sonst ändert sich nichts) |
+| GFM-Tabelle | gerenderte Tabelle mit Ausrichtung und Inline-Formatierung | Cursor in der Tabelle |
+| `> [!typ]` Callout | farbige Box mit Icon; `+`/`-` macht sie einklappbar (offen/zu) | Titel: Cursor auf der Titelzeile |
+| YAML-Frontmatter | kompakter, einklappbarer Block „Eigenschaften“ | Cursor in der Frontmatter (Klick auf eine Zeile springt dorthin) |
 
 Ausgeblendete Syntax ist atomar: Der Cursor landet nie in unsichtbaren Zeichen.
+
+**Bilder:**
+- Relative Pfade gelten ab dem Ordner der Notiz, Pfade mit `/` am Anfang ab dem Workspace-Ordner.
+- Von außen werden nur `https:` und `data:` geladen.
+- Fehlt ein Bild, erscheint ein Platzhalter mit Alt-Text.
+
+**Callout-Typen:** Jede Gruppe hat eine eigene Theme-Farbe und ein eigenes Codicon.
+- `note`
+- `abstract`/`summary`/`tldr`
+- `info`
+- `todo`
+- `tip`/`hint`/`important`
+- `success`/`check`/`done`
+- `question`/`help`/`faq`
+- `warning`/`caution`/`attention`
+- `failure`/`fail`/`missing`
+- `danger`/`error`
+- `bug`
+- `example`
+- `quote`/`cite`
+
+Unbekannte Typen sehen aus wie `note`. Das Einklappen ändert nur die Ansicht, nie die Datei.
 
 **Links öffnen:** `Strg+Klick` (macOS `Cmd+Klick`) öffnet einen Link, mit zusätzlich `Alt` öffnet er sich daneben.
 - `http`, `https` und `mailto` öffnen sich extern. Andere Schemes wie `command:` werden aus Sicherheitsgründen ignoriert.
@@ -61,6 +92,11 @@ Ausgeblendete Syntax ist atomar: Der Cursor landet nie in unsichtbaren Zeichen.
 - **Echo-Schutz:** Im Webview tragen Host-Änderungen die Annotation `remoteUpdate` und werden nicht zurückgesendet. Im Host (`src/editor/sync.ts`) spiegelt ein Schatten-Text den Stand des Webviews. Dokumentänderungen, die diesem Stand entsprechen, lösen kein `externalUpdate` aus.
 - **Veraltete Edits:** Jeder `edit` trägt die Version des letzten `init`/`externalUpdate`. Hat der Host seitdem ein neueres Update gesendet, verwirft er den Edit. Das Update überschreibt das Webview ohnehin, damit laufen beide Seiten wieder zusammen.
 - **`externalUpdate`** wird im Webview als minimaler Diff (gemeinsames Präfix/Suffix) und ohne History-Eintrag angewendet. Cursor und Scrollposition bleiben erhalten.
+- **Weitere Nachrichten:**
+  - `openLink` (Webview → Host)
+  - `copy` (Webview → Host, schreibt über `vscode.env.clipboard`)
+  - `tokenTheme` (Host → Webview)
+  - `init` enthält zusätzlich `rootUri` (Workspace-Ordner, für Bildpfade mit `/` am Anfang) und `tokens`.
 
 ### Theme
 
@@ -100,14 +136,45 @@ Zusätzlich zu den vorgegebenen CodeMirror-Paketen kommen zwei transitive Abhän
 - `@lezer/common` liefert den Typ `SyntaxNode` für die Decoration-Handler.
 
 Neu im Host:
-- `jsonc-parser` (Microsoft) liest Theme-Dateien. Die sind JSONC, also mit Kommentaren und Trailing Commas, und `JSON.parse` scheitert daran. Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
+- `jsonc-parser` (Microsoft) liest Theme-Dateien. Die sind JSONC, also mit Kommentaren und Trailing Commas, und `JSON.parse` scheitert daran.
+
+Neu im Webview:
+- `@vscode/codicons` liefert die Icons für Callouts, Kopier-Button und Einklappen, im Stil von VS Code. Die Schrift wird nach `dist/` gebündelt und unter der CSP über `font-src` geladen.
+
+Alle Pakete werden gebündelt und stehen deshalb in den `devDependencies`.
+
+**Bundle-Größe:** `@codemirror/language-data` lädt Sprachen sonst per dynamischem `import()`. Im vorgegebenen IIFE-Format bündelt esbuild alle Sprachen mit. Das Produktions-Bundle wächst dadurch auf etwa 1,6 MB (gzip etwa 0,5 MB). Die Module werden aber erst ausgeführt, wenn ein Codeblock die Sprache braucht.
 
 ### Code-Struktur der Live Preview
 
-- `webview/livepreview/inline.ts` enthält das ViewPlugin. Es läuft über den Lezer-Baum der sichtbaren Bereiche und ruft pro Knotentyp einen Handler auf, außerdem liefert es die atomaren Bereiche.
-- Pro Decoration-Gruppe gibt es eine Datei mit Handlern und Styles: `headings.ts`, `formatting.ts`, `links.ts`, `quotes.ts`, `lists.ts`, `rules.ts`.
-- `widgets/` enthält ein Widget pro Datei, `extensions/highlight.ts` die Lezer-Extension für `==…==`.
-- `commands.ts` enthält `Strg+B`/`Strg+I`.
+- **`context.ts`:** Der gemeinsame Sammler läuft über den Lezer-Baum und ruft pro Knotentyp einen Handler auf. Handler blenden aus, setzen Marks, Zeilenklassen oder Widgets.
+- **`inline.ts`:** Das ViewPlugin für Inline-Decorations, nur für die sichtbaren Bereiche.
+- **`blocks.ts`:** Das StateField für Block-Decorations, Pflicht für Block-Widgets und Ersetzungen über Zeilenumbrüche hinweg. Es deckt das ganze Dokument ab und cached pro Top-Level-Block. Neu gebaut wird ein Block nur, wenn sich sein Text, seine Position, seine Überschneidung mit der Selektion oder sein Klapp-Zustand ändert. Alles andere wird nur gemappt. So bleibt auch eine Datei mit 5.000+ Zeilen flüssig. Ein Test (`test/blocks.test.ts`) vergleicht nach zufälligen Änderungen das inkrementelle Ergebnis mit einem Neuaufbau.
+- **Eine Datei pro Decoration-Gruppe:**
+  - Inline: `headings.ts`, `formatting.ts`, `links.ts`, `images.ts`, `quotes.ts`, `lists.ts`, `rules.ts`
+  - Block: `codeblocks.ts`, `tables.ts`, `callouts.ts`, `frontmatter.ts`
+- **`widgets/`:** ein Widget pro Datei.
+- **`extensions/`:** die Lezer-Extensions für `==…==` und die YAML-Frontmatter.
+- **`render.ts`:** rendert Inline-Markdown für nicht editierbare Widgets, etwa Tabellenzellen.
+- **`folds.ts`:** hält den Klapp-Zustand als reine Ansichtsinformation.
+- **`commands.ts`:** `Strg+B`/`Strg+I`.
+
+**Tabellen ohne Springen:** Die gerenderte Tabelle ist ein Block-Widget. Jede Tabellenzeile ist genau eine Zeilenhöhe hoch, die Kopfzeile zwei, weil sie im Rohtext zusammen mit der `|---|`-Zeile zwei Zeilen belegt. Rahmen sind `box-shadow`s ohne Platzbedarf. Beim Wechsel zwischen gerendert und Rohtext bleibt der Inhalt darunter deshalb an Ort und Stelle. Das gilt nicht, wenn Zellen umbrechen.
+
+**Bekannte Einschränkungen:**
+- Mermaid und KaTeX (in Phase 3 optional) sind nicht umgesetzt.
+- Wird beim Springen über sehr große Dokumente direkt geklickt, während CodeMirror noch nachmisst, kann der Klick ins Leere gehen. Das ist ein Fehler in `@codemirror/view` (`posAtCoords`) und kommt in der Praxis selten vor.
+- Die Frontmatter-Anzeige ist kein vollständiger YAML-Parser. Verschachtelte Maps erscheinen als erste Zeile.
+
+## Testen von Phase 3
+
+1. `F5` → `samples/showcase.md`. Oben steht der Block „Eigenschaften“. Ein Klick auf den Kopf klappt ihn ein, ein Klick auf eine Zeile springt in die YAML.
+2. **Codeblöcke:** Syntax-Highlighting in den Theme-Farben. Ein Klick in den Block zeigt die Fences, dabei springt nichts. Der Kopier-Button kopiert exakt den Quelltext, Tabs bleiben erhalten.
+3. **Bilder:** Lokal, per https und mit Breite. Fehlende Bilder erscheinen als Platzhalter. Ein Bild mit relativem Pfad aus einem Unterordner zeigt `samples/notizen/unterordner.md`.
+4. **Tabellen:** Reinklicken zeigt den Rohtext, rausklicken die gerenderte Tabelle. Der Text darunter bewegt sich dabei nicht. `Strg+Klick` auf einen Link in einer Zelle öffnet ihn.
+5. **Callouts:** Jeder Typ hat eine eigene Farbe und ein eigenes Icon, auch im Dark Theme. Der Pfeil klappt ein und aus, die Datei bleibt dabei unverändert.
+6. **Theme wechseln** (`Strg+K Strg+T`): Hintergrund, Callouts, Tabellen und die Code-Farben folgen sofort.
+7. **Große Datei:** `npm run sample:large`, dann `samples/large.md` öffnen. Tippen und Cursorbewegung bleiben flüssig.
 
 ## Testen von Phase 2
 

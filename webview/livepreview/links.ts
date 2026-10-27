@@ -2,7 +2,7 @@ import { syntaxTree } from '@codemirror/language';
 import type { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { SyntaxNode } from '@lezer/common';
-import type { DecorationContext, NodeHandlers } from './inline';
+import type { DecorationContext, NodeHandlers } from './context';
 
 const LINK = 'cm-ob-link';
 
@@ -50,8 +50,10 @@ export function linkClick(open: OpenLink) {
   return EditorView.domEventHandlers({
     mousedown(event, view) {
       if (event.button !== 0 || !(event.ctrlKey || event.metaKey)) return false;
-      const pos = view.posAtCoords({ x: event.clientX, y: event.clientY });
-      const target = pos === null ? undefined : linkTargetAt(view.state, pos);
+      // Links inside non-editable widgets (e.g. rendered tables) carry their target in data-href.
+      const rendered = (event.target as HTMLElement).closest<HTMLElement>('[data-href]')?.dataset.href;
+      const pos = rendered ? null : view.posAtCoords({ x: event.clientX, y: event.clientY });
+      const target = rendered ?? (pos === null ? undefined : linkTargetAt(view.state, pos));
       if (!target) return false;
       event.preventDefault();
       open(target, event.altKey);
