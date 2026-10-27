@@ -142,7 +142,8 @@
     "sample:large": "node scripts/large-sample.mjs",
     "vsix": "vsce package --no-dependencies",
     "vscode:prepublish": "npm run package",
-    "notices": "node scripts/notices.mjs"
+    "notices": "node scripts/notices.mjs",
+    "smoke": "node scripts/smoke.cjs"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.11.1",
