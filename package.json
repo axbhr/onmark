@@ -1,0 +1,108 @@
+{
+  "name": "obsidianate",
+  "displayName": "Obsidianate",
+  "description": "Obsidian-artige Live Preview für Markdown in VS Code",
+  "version": "0.1.0",
+  "publisher": "axbhr",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "obsidianate.editor",
+        "displayName": "Obsidianate Live Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "obsidianate.openSource",
+        "title": "Als Quelltext öffnen",
+        "category": "Obsidianate",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "obsidianate.openLivePreview",
+        "title": "In Live Preview öffnen",
+        "category": "Obsidianate",
+        "icon": "$(open-preview)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "obsidianate.openSource",
+          "when": "activeCustomEditorId == obsidianate.editor",
+          "group": "navigation"
+        },
+        {
+          "command": "obsidianate.openLivePreview",
+          "when": "resourceExtname == .md && activeEditor == workbench.editors.files.textFileEditor",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Obsidianate",
+      "properties": {
+        "obsidianate.fontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Schriftart für Fließtext. Leer = Schrift der VS-Code-Oberfläche."
+        },
+        "obsidianate.fontSize": {
+          "type": "number",
+          "default": 16,
+          "minimum": 8,
+          "description": "Schriftgröße für Fließtext in Pixeln."
+        },
+        "obsidianate.readableLineLength": {
+          "type": "boolean",
+          "default": true,
+          "description": "Inhalt zentrieren und auf obsidianate.maxWidth begrenzen."
+        },
+        "obsidianate.maxWidth": {
+          "type": "number",
+          "default": 750,
+          "minimum": 200,
+          "description": "Maximale Inhaltsbreite in Pixeln bei lesbarer Zeilenlänge."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "package": "node esbuild.mjs --production",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "vscode:prepublish": "npm run package"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/search": "^6.7.2",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@lezer/highlight": "^1.2.5",
+    "@lezer/markdown": "^1.8.1",
+    "@types/node": "^20.19.43",
+    "@types/vscode": "~1.90.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.12"
+  }
+}
