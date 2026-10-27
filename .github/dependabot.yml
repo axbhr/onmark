@@ -16,6 +16,9 @@ updates:
     ignore:
       # Raising this raises the minimum supported VS Code version; do it deliberately.
       - dependency-name: '@types/vscode'
+      # Must match the Node.js version of the VS Code extension host, not the latest Node.js.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
