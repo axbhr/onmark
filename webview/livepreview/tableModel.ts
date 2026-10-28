@@ -98,11 +98,31 @@ export function parseTable(text: string, from: number): TableModel {
 export const rowAt = (table: TableModel, row: number): Row | undefined => (row === 0 ? table.header : table.body[row - 1]);
 
 /**
- * Cell text as typed ⇄ cell source. Every `|` becomes `\|`; unescaping turns `\|` back into `|`, so any
- * typed text (including `\|`) round-trips exactly.
+ * Cell text as typed → cell source. A pipe separates cells unless an odd number of backslashes precedes
+ * it (the same rule `pipes()` uses), so only separating pipes get a backslash. Other backslashes are
+ * Markdown the user typed and stay as they are.
  */
-export const escapeCell = (text: string) => text.replace(/\r?\n/g, ' ').replace(/\|/g, '\\|');
-export const unescapeCell = (text: string) => text.replace(/\\\|/g, '|');
+export function escapeCell(text: string): string {
+  let out = '';
+  let backslashes = 0;
+  for (const ch of text.replace(/\r?\n/g, ' ')) {
+    if (ch === '|' && backslashes % 2 === 0) out += '\\';
+    out += ch;
+    backslashes = ch === '\\' ? backslashes + 1 : 0;
+  }
+  return out;
+}
+
+/** Cell source → text to edit: escaped pipes are shown as plain pipes. */
+export function unescapeCell(text: string): string {
+  let out = '';
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '\\' && text[i + 1] === '|') continue;
+    if (text[i] === '\\') out += text[i++];
+    if (i < text.length) out += text[i];
+  }
+  return out;
+}
 
 /** Replaces the text of one cell, keeping its padding. Missing cells of a short row are appended. */
 export function setCell(table: TableModel, row: number, col: number, text: string, slice: (from: number, to: number) => string): Change[] {
