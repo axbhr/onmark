@@ -93,32 +93,34 @@ export const calloutFoldClick = EditorView.domEventHandlers({
 
 const groupStyles = Object.fromEntries(
   Object.entries(GROUPS).map(([group, { color }]) => [
-    `.cm-line.cm-om-callout-${group}`,
+    `.cm-line.cm-om-callout-${group}, .cm-om-bg.cm-om-callout-${group}`,
     { '--om-callout': `var(--vscode-${color})` },
   ]),
 );
 
 export const calloutTheme = EditorView.baseTheme({
   ...groupStyles,
-  '.cm-line.cm-om-callout': {
+  '.cm-line.cm-om-callout': { padding: '0 1em' },
+  '.cm-line.cm-om-callout-title': { color: 'var(--om-callout)', fontWeight: 'bold', paddingTop: '0.3em' },
+  '.cm-line.cm-om-callout-last': { paddingBottom: '0.3em' },
+  // Backgrounds are painted by the background layer (backgrounds.ts) so the selection stays visible.
+  '.cm-om-bg.cm-om-callout': {
     backgroundColor: 'color-mix(in srgb, var(--om-callout) 10%, var(--vscode-editor-background))',
-    padding: '0 1em',
-    borderLeft: '1px solid var(--vscode-contrastBorder, transparent)',
-    borderRight: '1px solid var(--vscode-contrastBorder, transparent)',
+    boxShadow: 'inset 1px 0 0 var(--vscode-contrastBorder, transparent), inset -1px 0 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-om-callout-title': {
-    color: 'var(--om-callout)',
-    fontWeight: 'bold',
-    paddingTop: '0.3em',
+  '.cm-om-bg.cm-om-callout-title': {
     borderTopLeftRadius: '4px',
     borderTopRightRadius: '4px',
-    boxShadow: 'inset 0 1px 0 var(--vscode-contrastBorder, transparent)',
+    boxShadow: 'inset 0 1px 0 var(--vscode-contrastBorder, transparent), inset 1px 0 0 var(--vscode-contrastBorder, transparent), inset -1px 0 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-om-callout-last': {
-    paddingBottom: '0.3em',
+  '.cm-om-bg.cm-om-callout-last': {
     borderBottomLeftRadius: '4px',
     borderBottomRightRadius: '4px',
-    boxShadow: 'inset 0 -1px 0 var(--vscode-contrastBorder, transparent)',
+    boxShadow: 'inset 0 -1px 0 var(--vscode-contrastBorder, transparent), inset 1px 0 0 var(--vscode-contrastBorder, transparent), inset -1px 0 0 var(--vscode-contrastBorder, transparent)',
+  },
+  '.cm-om-bg.cm-om-callout-title.cm-om-callout-last': {
+    borderRadius: '4px',
+    boxShadow: 'inset 0 0 0 1px var(--vscode-contrastBorder, transparent)',
   },
   '.cm-om-callout-head': { display: 'inline-flex', alignItems: 'center', gap: '0.4em', marginRight: '0.4em' },
   '.cm-om-callout-head .codicon': { fontSize: '1.05em' },

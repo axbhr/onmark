@@ -45,20 +45,25 @@ export const codeBlockTheme = EditorView.baseTheme({
     fontFamily: 'var(--vscode-editor-font-family)',
     fontSize: 'var(--vscode-editor-font-size)',
     fontWeight: 'var(--vscode-editor-font-weight)',
-    backgroundColor: 'var(--vscode-textCodeBlock-background)',
     padding: '0 1em',
-    borderLeft: '1px solid var(--vscode-contrastBorder, transparent)',
-    borderRight: '1px solid var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-om-codeblock-begin': {
+  // Same spacing in rendered and raw view, so entering a code block never shifts the content below.
+  '.cm-line.cm-om-codeblock-begin': { paddingTop: '0.4em' },
+  '.cm-line.cm-om-codeblock-end': { paddingBottom: '0.4em' },
+  // Backgrounds are painted by the background layer (backgrounds.ts) so the selection stays visible.
+  '.cm-om-bg.cm-om-codeblock': {
+    backgroundColor: 'var(--vscode-textCodeBlock-background)',
+    boxShadow: 'inset 1px 0 0 var(--vscode-contrastBorder, transparent), inset -1px 0 0 var(--vscode-contrastBorder, transparent)',
+  },
+  '.cm-om-bg.cm-om-codeblock-begin': {
     borderTopLeftRadius: '4px',
     borderTopRightRadius: '4px',
-    boxShadow: 'inset 0 1px 0 var(--vscode-contrastBorder, transparent)',
+    boxShadow: 'inset 0 1px 0 var(--vscode-contrastBorder, transparent), inset 1px 0 0 var(--vscode-contrastBorder, transparent), inset -1px 0 0 var(--vscode-contrastBorder, transparent)',
   },
-  '.cm-line.cm-om-codeblock-end': {
+  '.cm-om-bg.cm-om-codeblock-end': {
     borderBottomLeftRadius: '4px',
     borderBottomRightRadius: '4px',
-    boxShadow: 'inset 0 -1px 0 var(--vscode-contrastBorder, transparent)',
+    boxShadow: 'inset 0 -1px 0 var(--vscode-contrastBorder, transparent), inset 1px 0 0 var(--vscode-contrastBorder, transparent), inset -1px 0 0 var(--vscode-contrastBorder, transparent)',
   },
   '.cm-om-code-header': {
     display: 'inline-flex',
@@ -72,7 +77,7 @@ export const codeBlockTheme = EditorView.baseTheme({
   },
   '.cm-om-code-copy': {
     display: 'inline-flex',
-    padding: '0 2px',
+    padding: '2px',
     border: 'none',
     borderRadius: '3px',
     background: 'none',

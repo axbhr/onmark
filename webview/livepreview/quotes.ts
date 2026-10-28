@@ -20,6 +20,8 @@ export const quoteTheme = EditorView.baseTheme({
   '.cm-line.cm-om-quote': {
     borderLeft: '3px solid var(--vscode-textBlockQuote-border, var(--vscode-textLink-foreground))',
     paddingLeft: '1em',
-    backgroundColor: 'var(--vscode-textBlockQuote-background)',
+
   },
+  // Painted by the background layer (backgrounds.ts) so the selection stays visible.
+  '.cm-om-bg.cm-om-quote': { backgroundColor: 'var(--vscode-textBlockQuote-background)' },
 });

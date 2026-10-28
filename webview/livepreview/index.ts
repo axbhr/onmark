@@ -1,5 +1,6 @@
 import { Prec } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
+import { backgroundLayer, backgroundTheme } from './backgrounds';
 import { blockPreview } from './blocks';
 import { calloutFoldClick, calloutHandlers, calloutTheme } from './callouts';
 import { codeBlockCopy, codeBlockHandlers, codeBlockTheme } from './codeblocks';
@@ -8,13 +9,15 @@ import { flippedFolds } from './folds';
 import { formattingHandlers, formattingTheme } from './formatting';
 import { frontmatterClick, frontmatterHandlers, frontmatterTheme } from './frontmatter';
 import { headingHandlers, headingTheme } from './headings';
+import { htmlBlockHandlers, htmlClick, htmlTheme, inlineHtmlHandlers, noteStyles } from './html';
 import { imageHandlers, imageTheme, resourceBase } from './images';
+import { combineHandlers } from './context';
 import { inlinePreview } from './inline';
-import { linkClick, linkHandlers, linkTheme, type OpenLink } from './links';
+import { linkClick, linkHandlers, linkOpener, linkTheme, type OpenLink } from './links';
 import { checkboxClick, listHandlers, listTheme } from './lists';
 import { quoteHandlers, quoteTheme } from './quotes';
 import { ruleHandlers, ruleTheme } from './rules';
-import { tableClick, tableHandlers, tableTheme } from './tables';
+import { tableHandlers, tableTheme } from './tables';
 
 export { Frontmatter } from './extensions/frontmatter';
 export { Highlight, highlightTag } from './extensions/highlight';
@@ -30,25 +33,30 @@ export interface LivePreviewOptions {
 export function livePreview(options: LivePreviewOptions) {
   return [
     resourceBase.of({ base: options.base, root: options.root }),
+    linkOpener.of(options.openLink),
+    // Registered after drawSelection() in editor.ts, so it sits below the selection layer.
+    backgroundLayer,
     flippedFolds,
-    inlinePreview({
-      ...headingHandlers,
-      ...formattingHandlers,
-      ...linkHandlers,
-      ...imageHandlers,
-      ...quoteHandlers,
-      ...listHandlers,
-      ...ruleHandlers,
-    }),
-    blockPreview({
-      ...frontmatterHandlers,
-      ...codeBlockHandlers,
-      ...tableHandlers,
-      ...calloutHandlers,
-    }),
-    // Before tableClick so Ctrl+click on a link inside a rendered table opens the link.
+    noteStyles,
+    inlinePreview(
+      combineHandlers(
+        // First: inline HTML replaces whole ranges; other handlers then skip what it covers.
+        inlineHtmlHandlers,
+        headingHandlers,
+        formattingHandlers,
+        linkHandlers,
+        imageHandlers,
+        quoteHandlers,
+        listHandlers,
+        ruleHandlers,
+      ),
+    ),
+    blockPreview(
+      combineHandlers(frontmatterHandlers, codeBlockHandlers, tableHandlers, calloutHandlers, htmlBlockHandlers),
+    ),
+    // Before the widget click handlers, so links inside rendered tables and HTML open on click.
     linkClick(options.openLink),
-    tableClick,
+    htmlClick,
     codeBlockCopy(options.copy),
     checkboxClick,
     calloutFoldClick,
@@ -61,6 +69,8 @@ export function livePreview(options: LivePreviewOptions) {
       ]),
     ),
     [
+      backgroundTheme,
+      htmlTheme,
       headingTheme,
       formattingTheme,
       linkTheme,
