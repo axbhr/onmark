@@ -1,5 +1,5 @@
 import { syntaxTree } from '@codemirror/language';
-import type { EditorState } from '@codemirror/state';
+import { Facet, type EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { SyntaxNode } from '@lezer/common';
 import type { DecorationContext, NodeHandlers } from './context';
@@ -51,6 +51,9 @@ export function linkAt(state: EditorState, pos: number): { target: string; from:
 export const linkTargetAt = (state: EditorState, pos: number) => linkAt(state, pos)?.target;
 
 export type OpenLink = (target: string, toSide: boolean) => void;
+
+/** Opens links from widgets that handle their own events (e.g. tables). */
+export const linkOpener = Facet.define<OpenLink, OpenLink>({ combine: (values) => values[0] ?? (() => {}) });
 
 /**
  * A click on a rendered link opens it, like in a preview. While the link's syntax is visible (the
