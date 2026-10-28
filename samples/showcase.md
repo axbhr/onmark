@@ -31,7 +31,7 @@ Shortcuts: select text and press `Ctrl+B` or `Ctrl+I`.
 
 ## Links
 
-`Ctrl+Click` opens a link, `Ctrl+Alt+Click` opens it to the side.
+Click a link to open it, `Alt+Click` opens it to the side. While the cursor is inside a link, a click edits it and `Ctrl+Click` opens it.
 
 - External: [VS Code](https://code.visualstudio.com)
 - Relative note (opens in Onmark): [CRLF file](./crlf.md)
@@ -163,6 +163,27 @@ b | 2
 
 > [!quote] Quote
 > — Someone famous
+
+## HTML and CSS
+
+Inline HTML: press <kbd>Ctrl</kbd>+<kbd>S</kbd> to save, H<sub>2</sub>O, x<sup>2</sup>, <mark>marked</mark> and <span style="color: #e2572b">**colored** text</span>.
+
+<div class="card">
+  <h4>HTML block</h4>
+  <p>Rendered like in a browser, with <b>inline styles</b> and <a href="https://code.visualstudio.com">links</a>.</p>
+</div>
+
+<details>
+<summary>Click to expand</summary>
+Hidden content inside <code>&lt;details&gt;</code>.
+</details>
+
+<style>
+.card { border: 1px solid #e2572b; border-radius: 6px; padding: 0 1em; }
+.card h4 { color: #e2572b; }
+</style>
+
+<script>console.log('Scripts are never run.')</script>
 
 ## Unicode
 

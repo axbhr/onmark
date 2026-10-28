@@ -1,6 +1,8 @@
 import type { SyntaxNode } from '@lezer/common';
 import { parser as baseParser, GFM } from '@lezer/markdown';
 import { Highlight } from './extensions/highlight';
+import { renderHtml } from './html/sanitize';
+import { inlineHtmlUnits } from './html/units';
 import { resolveImageSrc } from './images';
 
 const parser = baseParser.configure([GFM, Highlight]);
@@ -26,14 +28,30 @@ export function renderInline(text: string, base: string, root: string): Document
     fragment.append(text);
     return fragment;
   }
-  appendChildren(fragment, paragraph, text, base, root);
+  const units = inlineHtmlUnits(paragraph, (from, to) => text.slice(from, to));
+  appendChildren(fragment, paragraph, text, base, root, units);
   return fragment;
 }
 
-function appendChildren(parent: Node, node: SyntaxNode, text: string, base: string, root: string) {
+function appendChildren(
+  parent: Node,
+  node: SyntaxNode,
+  text: string,
+  base: string,
+  root: string,
+  htmlUnits: readonly { from: number; to: number }[] = [],
+) {
   let pos = node.from;
   for (let child = node.firstChild; child; child = child.nextSibling) {
+    if (child.to <= pos) continue; // inside an HTML unit that was already rendered
     if (child.from > pos) parent.appendChild(document.createTextNode(text.slice(pos, child.from)));
+    const unit = htmlUnits.find((u) => u.from === child!.from);
+    if (unit) {
+      const renderText = (t: string) => renderInline(t, base, root);
+      parent.appendChild(renderHtml(text.slice(unit.from, unit.to), { base, root, renderText }));
+      pos = unit.to;
+      continue;
+    }
     appendNode(parent, child, text, base, root);
     pos = child.to;
   }

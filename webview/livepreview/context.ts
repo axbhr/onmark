@@ -26,6 +26,24 @@ export interface Decorations {
   atomic: Range<Decoration>[];
 }
 
+/** Merges handler maps; handlers for the same node type all run, in order. */
+export function combineHandlers(...maps: NodeHandlers[]): NodeHandlers {
+  const result: NodeHandlers = {};
+  for (const map of maps) {
+    for (const [name, handler] of Object.entries(map)) {
+      const previous = result[name];
+      result[name] = previous
+        ? (node, ctx) => {
+            const a = previous(node, ctx);
+            const b = handler(node, ctx);
+            return a === false || b === false ? false : undefined;
+          }
+        : handler;
+    }
+  }
+  return result;
+}
+
 const hidden = Decoration.replace({});
 
 /** Walks the syntax tree in `ranges`, never descending into `skip` nodes, and collects decorations. */
@@ -40,6 +58,9 @@ export function collect(
   // Nodes spanning several visible ranges are visited more than once.
   const seen = new Set<string>();
   const once = (key: string) => !seen.has(key) && !!seen.add(key);
+  // Ranges replaced by a widget; decorations inside them would conflict and are dropped.
+  const covered: { from: number; to: number }[] = [];
+  const inside = (from: number, to: number) => covered.some((c) => from >= c.from && to <= c.to);
 
   const activeLines = new Set<number>();
   for (const r of state.selection.ranges) {
@@ -52,19 +73,20 @@ export function collect(
     touches: (from, to) => state.selection.ranges.some((r) => r.from <= to && r.to >= from),
     lineActive: (pos) => activeLines.has(state.doc.lineAt(pos).number),
     hide(from, to) {
-      if (from >= to || !once(`h${from}:${to}`)) return;
+      if (from >= to || inside(from, to) || !once(`h${from}:${to}`)) return;
       decorations.push(hidden.range(from, to));
       atomic.push(hidden.range(from, to));
     },
     widget(from, to, widget, block = false) {
-      if (!once(`w${from}:${to}`)) return;
+      if ((from < to ? inside(from, to) : covered.some((c) => from > c.from && from < c.to)) || !once(`w${from}:${to}`)) return;
+      if (from < to) covered.push({ from, to });
       const deco =
         from === to ? Decoration.widget({ widget, side: -1, block }) : Decoration.replace({ widget, block });
       decorations.push(deco.range(from, to));
       if (from < to) atomic.push(deco.range(from, to));
     },
     mark(from, to, cls) {
-      if (from < to && once(`m${from}:${to}:${cls}`)) decorations.push(Decoration.mark({ class: cls }).range(from, to));
+      if (from < to && !inside(from, to) && once(`m${from}:${to}:${cls}`)) decorations.push(Decoration.mark({ class: cls }).range(from, to));
     },
     line(pos, cls, attributes) {
       const start = state.doc.lineAt(pos).from;
