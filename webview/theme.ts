@@ -17,10 +17,15 @@ export const editorTheme = EditorView.theme({
   },
   '&.cm-focused': { outline: 'none' },
   '.cm-scroller': { fontFamily: 'inherit', lineHeight: '1.6' },
+  // Side spacing is margin, not padding: CodeMirror draws full-line selections across the content
+  // box, which must end where the lines (and the boxes of code blocks, callouts …) end.
   '.cm-content': {
+    // The content is a flex item of the scroller; without this it grows past its width.
+    flexGrow: '0',
+    width: 'calc(100% - 64px)',
     maxWidth: 'var(--om-max-width)',
     margin: '0 auto',
-    padding: '24px 32px',
+    padding: '24px 0',
     boxSizing: 'border-box',
     caretColor: 'var(--vscode-editorCursor-foreground)',
   },
