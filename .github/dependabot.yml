@@ -19,6 +19,9 @@ updates:
       # Must match the Node.js version of the VS Code extension host, not the latest Node.js.
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      # vitest 5 needs Node.js 22 and @types/node 22, newer than the extension host of VS Code 1.90.
+      - dependency-name: 'vitest'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
