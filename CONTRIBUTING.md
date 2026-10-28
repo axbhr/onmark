@@ -65,7 +65,7 @@ Versioning is fully automated; `package.json` always says `0.0.0` and CI sets th
 
 The `test` and `production` GitHub environments hold the publishing tokens:
 
-- `VSCE_PAT`: Azure DevOps personal access token with the **Marketplace → Manage** scope for the `axbhr` publisher
 - `OVSX_PAT`: Open VSX access token for the `axbhr` namespace
+- `VSCE_PAT` (optional): Azure DevOps personal access token with the **Marketplace → Manage** scope for the `axbhr` publisher. Without it, the release workflow skips the VS Code Marketplace; upload the `.vsix` from the GitHub release at [marketplace.visualstudio.com/manage](https://marketplace.visualstudio.com/manage/publishers/axbhr) (**More actions → Update**, or **New extension → Visual Studio Code** for the first version).
 
 Releases to `production` require an approval by a maintainer.
