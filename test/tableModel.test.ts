@@ -83,7 +83,7 @@ describe('table edits', () => {
   });
 
   it('round-trips escaping', () => {
-    expect(unescapeCell(escapeCell('a | b \\| c'))).toBe('a | b | c');
+    for (const typed of ['a | b', 'a \\| b', 'a\\', '\\|', '||']) expect(unescapeCell(escapeCell(typed))).toBe(typed);
     expect(escapeCell('x\ny')).toBe('x y');
   });
 });
@@ -115,7 +115,7 @@ describe('table edits (randomized)', () => {
         const col = rand(t.columns);
         const value = ['x', 'a b', 'p|q', '', '**z**'][rand(5)];
         text = apply(text, setCell(t, row, col, value, slice));
-        (row === 0 ? expected.header : expected.body[row - 1])[col] = value.trim().replace(/\|/g, '\\|');
+        (row === 0 ? expected.header : expected.body[row - 1])[col] = escapeCell(value).trim();
       } else if (op === 1) {
         const index = rand(t.body.length + 1);
         text = apply(text, insertRow(t, index));

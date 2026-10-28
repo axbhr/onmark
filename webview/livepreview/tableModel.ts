@@ -97,7 +97,11 @@ export function parseTable(text: string, from: number): TableModel {
 /** Row by display index: 0 is the header, 1… are body rows. */
 export const rowAt = (table: TableModel, row: number): Row | undefined => (row === 0 ? table.header : table.body[row - 1]);
 
-export const escapeCell = (text: string) => text.replace(/\r?\n/g, ' ').replace(/(?<!\\)\|/g, '\\|');
+/**
+ * Cell text as typed ⇄ cell source. Every `|` becomes `\|`; unescaping turns `\|` back into `|`, so any
+ * typed text (including `\|`) round-trips exactly.
+ */
+export const escapeCell = (text: string) => text.replace(/\r?\n/g, ' ').replace(/\|/g, '\\|');
 export const unescapeCell = (text: string) => text.replace(/\\\|/g, '|');
 
 /** Replaces the text of one cell, keeping its padding. Missing cells of a short row are appended. */
