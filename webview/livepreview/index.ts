@@ -13,11 +13,11 @@ import { htmlBlockHandlers, htmlClick, htmlTheme, inlineHtmlHandlers, noteStyles
 import { imageHandlers, imageTheme, resourceBase } from './images';
 import { combineHandlers } from './context';
 import { inlinePreview } from './inline';
-import { linkClick, linkHandlers, linkTheme, type OpenLink } from './links';
+import { linkClick, linkHandlers, linkOpener, linkTheme, type OpenLink } from './links';
 import { checkboxClick, listHandlers, listTheme } from './lists';
 import { quoteHandlers, quoteTheme } from './quotes';
 import { ruleHandlers, ruleTheme } from './rules';
-import { tableClick, tableHandlers, tableTheme } from './tables';
+import { tableHandlers, tableTheme } from './tables';
 
 export { Frontmatter } from './extensions/frontmatter';
 export { Highlight, highlightTag } from './extensions/highlight';
@@ -33,6 +33,7 @@ export interface LivePreviewOptions {
 export function livePreview(options: LivePreviewOptions) {
   return [
     resourceBase.of({ base: options.base, root: options.root }),
+    linkOpener.of(options.openLink),
     // Registered after drawSelection() in editor.ts, so it sits below the selection layer.
     backgroundLayer,
     flippedFolds,
@@ -56,7 +57,6 @@ export function livePreview(options: LivePreviewOptions) {
     // Before the widget click handlers, so links inside rendered tables and HTML open on click.
     linkClick(options.openLink),
     htmlClick,
-    tableClick,
     codeBlockCopy(options.copy),
     checkboxClick,
     calloutFoldClick,
