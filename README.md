@@ -44,7 +44,8 @@ Onmark renders the Markdown **in the editor itself**. Headings are big, bold tex
 | **Text** | Headings, **bold**, *italic*, ~~strikethrough~~, ==highlight==, `inline code`, links and autolinks |
 | **Lists** | Bullets, numbered lists and clickable task checkboxes that edit the source |
 | **Code blocks** | Syntax highlighting for 100+ languages in your theme's colors, language label, copy button |
-| **Tables** | GitHub tables with alignment and inline formatting, rendered in place without layout jumps |
+| **Tables** | GitHub tables you edit in place: click a cell to type, add or remove rows and columns and set alignment from a toolbar, `Tab`/`Enter` to move between cells |
+| **HTML & CSS** | Inline HTML (`<kbd>`, `<sub>`, `<span style>` …), HTML blocks, `<details>` and `<style>` blocks; sanitized, scripts never run |
 | **Callouts** | `> [!note]`, `[!tip]`, `[!warning]` and 10 more types with icons and colors; foldable with `+`/`-` |
 | **Images** | Local images (relative to the note or the workspace) and `https` images, with optional width `![alt\|300](…)` |
 | **Frontmatter** | YAML frontmatter as a compact, foldable **Properties** block |
@@ -85,7 +86,8 @@ Open any `.md` file. It opens in Onmark automatically.
 
 - **See the raw text:** click **Open as Source Text** in the editor title bar or run **Onmark: Open as Source Text** from the Command Palette.
 - **Back to the live preview:** click the Onmark button in the title bar of the text editor or run **Onmark: Open in Live Preview**.
-- **Open links:** `Ctrl+Click` (`Cmd+Click` on macOS). Add `Alt` to open them to the side. Relative `.md` links open in Onmark, other files in their default editor.
+- **Open links:** click a rendered link. Add `Alt` to open it to the side. While the cursor is inside a link (its syntax is visible), a click edits it and `Ctrl+Click` (`Cmd+Click` on macOS) opens it. Relative `.md` links open in Onmark, other files in their default editor.
+- **Edit tables:** click a cell and type. The toolbar above the table inserts or deletes rows and columns and aligns the column; the `+` handles add a row or column at the end. **Edit as Markdown** in the toolbar shows the raw table.
 
 Both editors can be open side by side on the same file; changes appear in both instantly.
 
@@ -96,7 +98,10 @@ Both editors can be open side by side on the same file; changes appear in both i
 | `Ctrl+B` / `Cmd+B` | Toggle **bold** |
 | `Ctrl+I` / `Cmd+I` | Toggle *italic* |
 | `Ctrl+F` / `Cmd+F` | Find and replace inside the note |
-| `Ctrl+Click` / `Cmd+Click` | Open link (`+Alt`: to the side) |
+| Click / `Ctrl+Click` | Open link (`+Alt`: to the side) |
+| `Tab` / `Shift+Tab` | Next / previous table cell (`Tab` in the last cell adds a row) |
+| `Enter` | Table cell below (adds a row in the last row) |
+| `Esc` | Leave the table |
 
 While Onmark has focus, `Ctrl+B` and `Ctrl+I` format text instead of toggling the sidebar or opening inline chat.
 
@@ -146,6 +151,14 @@ VS Code does not give webviews access to syntax colors, so Onmark reads them fro
 <br>
 
 No. Onmark is an independent project inspired by the live preview idea popularized by Obsidian and supports its callout and highlight syntax, but it is not affiliated with or endorsed by Obsidian.
+
+</details>
+
+<details>
+<summary><b>Which HTML and CSS does Onmark render?</b></summary>
+<br>
+
+HTML in notes is rendered like in a browser, but rebuilt from an allowlist of safe elements and attributes: scripts, event handlers, frames, forms and unsafe URLs are removed, and scripts never run. Inline `style` attributes work. CSS from `<style>` blocks applies to the HTML in the same note only, so it cannot change the editor itself; positioning that would let content cover the editor (`position: fixed` and friends) is removed.
 
 </details>
 
