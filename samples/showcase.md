@@ -116,11 +116,14 @@ Subfolder example: [notes/subfolder.md](notes/subfolder.md)
 
 ## Tables
 
+Click a cell to edit it. The toolbar above the table adds and removes rows and columns and sets the alignment; the `+` handles add a row or column at the end. `Tab`/`Enter` move between cells.
+
 | Element | Rendering | Alignment |
 | :------ | :-------: | --------: |
 | **bold** | `code` | right |
 | [link](https://code.visualstudio.com) | ==highlight== | 42 |
 | empty → | | 3.14 |
+| <kbd>Ctrl</kbd>+<kbd>S</kbd> | H<sub>2</sub>O | HTML |
 
 Without outer pipes:
 

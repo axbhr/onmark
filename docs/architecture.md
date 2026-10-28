@@ -53,6 +53,12 @@ Rendering is driven by the Lezer Markdown tree (GFM plus own extensions for `==h
 
 **Visibility rules:** inline syntax shows while the selection touches the element, block syntax (headings, quotes, list markers) on the cursor line, and large blocks (tables, code fences, frontmatter) while the cursor is inside them.
 
+**Backgrounds and the selection:** CodeMirror draws the selection in a layer *behind* the text. Backgrounds of code blocks, callouts, quotes, inline code and highlights are therefore not painted on the elements but by `backgrounds.ts`, a layer below the selection layer that copies the boxes of those elements.
+
+**Editable tables:** `widgets/table.ts` renders tables as an editable grid. A focused cell shows its Markdown source (`contenteditable="plaintext-only"`); every keystroke becomes a minimal change of that cell in the document, so the undo history groups typing as usual. Structural operations (rows, columns, alignment) live in `tableModel.ts` as pure functions that only touch the affected cells or lines; a randomized test checks them against a reference model. While a cell is focused, CodeMirror ignores the table's DOM events and selection, and `updateDOM` keeps the focused cell untouched unless its source changed elsewhere (undo).
+
+**HTML:** `html/sanitize.ts` parses HTML from notes into an inert document and rebuilds it from an allowlist, so scripts, event handlers, frames and unsafe URLs never reach the page. Inline styles are applied through CSSOM, which the CSP allows (unlike `style` attributes); `<style>` blocks become one constructed stylesheet scoped with `@scope (.cm-om-html)`, re-serialized rule by rule so the CSS cannot break out of the scope. Positioning that could cover the editor is removed.
+
 **Tables without jumping:** a rendered table is a block widget whose rows are exactly one line high and whose header is two (it stands in for the `|---|` line). Borders are box shadows and take no space, so the content below stays put when switching between rendered and raw text.
 
 ## Theme
