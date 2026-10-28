@@ -74,6 +74,6 @@ export const markdownHighlight = HighlightStyle.define([
     fontFamily: 'var(--vscode-editor-font-family)',
     color: 'var(--vscode-textPreformat-foreground)',
   },
-  { tag: highlightTag, backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)', borderRadius: '2px' },
+  { tag: highlightTag, color: 'inherit' },
   { tag: [t.processingInstruction, t.meta, t.contentSeparator, t.labelName], color: muted },
 ]);

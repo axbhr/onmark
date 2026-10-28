@@ -1,5 +1,6 @@
 import { Prec } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
+import { backgroundLayer, backgroundTheme } from './backgrounds';
 import { blockPreview } from './blocks';
 import { calloutFoldClick, calloutHandlers, calloutTheme } from './callouts';
 import { codeBlockCopy, codeBlockHandlers, codeBlockTheme } from './codeblocks';
@@ -30,6 +31,8 @@ export interface LivePreviewOptions {
 export function livePreview(options: LivePreviewOptions) {
   return [
     resourceBase.of({ base: options.base, root: options.root }),
+    // Registered after drawSelection() in editor.ts, so it sits below the selection layer.
+    backgroundLayer,
     flippedFolds,
     inlinePreview({
       ...headingHandlers,
@@ -61,6 +64,7 @@ export function livePreview(options: LivePreviewOptions) {
       ]),
     ),
     [
+      backgroundTheme,
       headingTheme,
       formattingTheme,
       linkTheme,
