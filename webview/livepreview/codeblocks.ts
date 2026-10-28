@@ -47,6 +47,9 @@ export const codeBlockTheme = EditorView.baseTheme({
     fontWeight: 'var(--vscode-editor-font-weight)',
     padding: '0 1em',
   },
+  // Same spacing in rendered and raw view, so entering a code block never shifts the content below.
+  '.cm-line.cm-om-codeblock-begin': { paddingTop: '0.4em' },
+  '.cm-line.cm-om-codeblock-end': { paddingBottom: '0.4em' },
   // Backgrounds are painted by the background layer (backgrounds.ts) so the selection stays visible.
   '.cm-om-bg.cm-om-codeblock': {
     backgroundColor: 'var(--vscode-textCodeBlock-background)',
@@ -74,7 +77,7 @@ export const codeBlockTheme = EditorView.baseTheme({
   },
   '.cm-om-code-copy': {
     display: 'inline-flex',
-    padding: '0 2px',
+    padding: '2px',
     border: 'none',
     borderRadius: '3px',
     background: 'none',
