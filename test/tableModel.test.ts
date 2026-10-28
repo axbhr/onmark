@@ -5,6 +5,7 @@ import {
   escapeCell,
   insertColumn,
   insertRow,
+  parseRow,
   parseTable,
   setAlign,
   setCell,
@@ -83,7 +84,14 @@ describe('table edits', () => {
   });
 
   it('round-trips escaping', () => {
-    for (const typed of ['a | b', 'a \\| b', 'a\\', '\\|', '||']) expect(unescapeCell(escapeCell(typed))).toBe(typed);
+    for (const typed of ['a | b', 'a \\| b', 'a\\', '\\|', '||', 'x\\\\|y', '\\*not italic*']) {
+      // Escaped text never splits a row and shows as the same text when edited again.
+      expect(parseRow(`| ${escapeCell(typed)} |`, 0).cells).toHaveLength(1);
+      expect(unescapeCell(escapeCell(typed))).toBe(unescapeCell(typed));
+      expect(escapeCell(unescapeCell(escapeCell(typed)))).toBe(escapeCell(typed));
+    }
+    expect(escapeCell('a|b')).toBe('a\\|b');
+    expect(escapeCell('\\*x*')).toBe('\\*x*');
     expect(escapeCell('x\ny')).toBe('x y');
   });
 });
